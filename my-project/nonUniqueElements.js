@@ -25,6 +25,21 @@ nonUniqueElements([10, 9, 10, 10, 9, 8]) == [10, 9, 10, 10, 9]
  */
 
 export default function nonUniqueElements(data) {
-  // your solution goes here
-  return data
+  let res = []
+  let checked = new Set();
+  let nonUnique = new Set();
+  for(const num of data) {
+    if(checked.has(num)){
+      nonUnique.add(num);
+    } else {
+      checked.add(num);
+    }
+  }
+
+  for(const num of data){
+    if(nonUnique.has(num)) {
+      res.push(num)
+    }
+  }
+  return res;
 }
