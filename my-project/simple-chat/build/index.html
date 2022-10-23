@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>Send a message</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="style.css" rel="stylesheet"></head>
+    <body>
+        <nav>
+            
+            <div class="material-icons">
+                arrow_back
+            </div>
+            <div class="reciever">
+                <img src="static/barsiq.png" style="float:left; margin: 1em;">
+                <p id="name">
+                    Дженнифер
+                </p>
+                <p id="last-seen">
+                    была в сети 2 часа назад
+                </p>
+                
+
+            </div>
+            <div class="material-icons">
+                search
+            </div>
+            <div class="material-icons">
+                more_vert
+            </div>
+        </nav>
+        <style>
+            #name {
+                font-size: 20px;
+            }
+            #last-seen {
+                font-size: 10px;
+                opacity: 2;
+            }
+            
+            .reciever{
+                flex-grow: 1;
+            }
+            .form {
+                width: 100%;
+                display: inline-block;
+                border: 1px solid rgba(25, 25, 25, 0.32);
+            }
+
+            .message {
+                color: red;
+                /* border: 1px solid; */
+                border-radius: 4px;
+                margin: 4px 0;
+                padding: 4px;
+            }
+
+            input[type=submit] {
+                visibility: collapse;
+            }
+
+            input {
+                border: 0;
+                outline: none;
+                width: calc(100% - 2px);
+            }
+        </style>
+        <form class="form" action="/">
+            <div class="message"></div>
+            <input class="form-input" name="message-text" placeholder="Cообщение" type="text">
+        </form>
+        <div>
+
+        </div>
+        <script>
+            const form = document.querySelector('form');
+            const input = document.querySelector('.form-input');
+            const message = document.querySelector('.message');
+
+            form.addEventListener('submit', this.handleSubmit.bind(this));
+            form.addEventListener('keypress', this.handleKeyPress.bind(this));
+
+            function handleSubmit (event) {
+                event.preventDefault();
+                message.innerText = input.value;
+
+
+                input.value = '';
+            }
+
+            function handleKeyPress (event) {
+                if (event.keyCode === 13) {
+                    form.dispatchEvent(new Event('submit'));
+                }
+            }
+        </script>
+    <script type="text/javascript" src="bundle.js"></script></body>
+</html>
