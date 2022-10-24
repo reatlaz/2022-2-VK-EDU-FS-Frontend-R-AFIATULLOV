@@ -77,6 +77,11 @@
             const form = document.querySelector('form');
             const input = document.querySelector('.form-input');
             //const message = document.querySelector('.message');
+            const messages = document.getElementById("messages");
+            let localStorageMessages = JSON.parse(localStorage.getItem("messages"));
+            if(localStorageMessages !== null) {
+                messages.innerHTML += localStorageMessages;
+            }
 
             form.addEventListener('submit', handleSubmit.bind());
             //form.addEventListener('keypress', handleKeyPress.bind());
@@ -109,9 +114,17 @@
                     </div>
                 </div>`
 
-                    const messages = document.getElementById("messages");
+
 
                     messages.innerHTML += newMessageHTML;
+                    if(localStorageMessages !== null) {
+                        localStorageMessages += newMessageHTML;
+                    } else {
+                        localStorageMessages = newMessageHTML;
+                    }
+
+
+                    localStorage.setItem('messages', JSON.stringify(localStorageMessages));
 
 
                     /*const message = document.createElement("div");
@@ -137,7 +150,7 @@
                     //messages.appendChild(message);
 
 
-                    localStorage.setItem('messages', JSON.stringify(messages));
+
                     //message.innerText = input.value;
 
 
