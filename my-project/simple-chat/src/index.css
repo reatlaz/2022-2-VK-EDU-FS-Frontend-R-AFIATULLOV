@@ -13,24 +13,30 @@ html {
 }
 nav {
     z-index: 100;
-    position: fixed;
+    position: sticky;
     top: 0;
     margin: 0;
-    height: 8%;
+    height: min-content;
     width: 100%;
     background-color: #77009C;
     color: #fff;
     align-items: center;
     display: flex;
     flex-direction: row;
-    padding: 0 15px;
+    padding: 0;
 }
 nav>div {
+    size: 110px;
     margin: 30px;
     color: white;
 
     background-color: transparent;
 
+}
+
+nav>div>a {
+    color: inherit;
+    text-decoration: none;
 }
 
 body {
@@ -49,31 +55,35 @@ input[type=submit] {
 }
 
 input {
+
     font-size: 40px;
     border: 0;
     outline: none;
-    flex-grow: 1; 
+    flex-grow: 1;
+
     
 }
 
 #text-input {
+
     background-color: white;
     border: 1px solid rgba(25, 25, 25, 0.32);
     width: calc(100% - 2px);
     position: fixed;
     bottom: 0;
-    height: 7%;
+    height: auto;
     display: flex;
     flex-direction: row;
-    padding: 2%;
+    padding: 20px;
 }
 
-.receiver {
-    
+.heading {
+
     display: flex;
     flex-direction: row;
     flex-grow: 1;
     align-items: center;
+    margin: 0 0 0 15px;
 
 }
 
@@ -84,11 +94,13 @@ input {
     justify-content: space-around;
 }
 
-.receiver-avatar {
+.user-avatar {
+    border-radius: 50%;
     width: 110px;
     height: 110px;
+    margin: 10px;
 }
-#name {
+#username {
     font-size: 60px;
     margin: 20px;
 }
@@ -201,16 +213,17 @@ input {
 
 #messages {
     overflow-y: scroll;
-    height: 30%;
-    max-height: 80%;
-    width: 100%;
-    padding-top: 18%;
+    height: min-content;
 
-    padding-bottom: 16%;
+    width: 100%;
+    padding-top: 20px;
+
+    padding-bottom: 20%;
 
     display: flex;
     flex-direction: column;
 
 }
+
 
 

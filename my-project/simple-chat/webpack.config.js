@@ -54,6 +54,18 @@ module.exports = {
                     },
                 ],
             },
+            {
+                test: /chats\.css$/,
+                include: SRC_PATH,
+                use: [
+                    {
+                        loader: MiniCSSExtractPlugin.loader,
+                    },
+                    {
+                        loader: 'css-loader',
+                    },
+                ],
+            },
             
         ],
     },
@@ -64,6 +76,10 @@ module.exports = {
         new HTMLWebpackPlugin({
             filename: 'index.html',
             template: './index.html'
+        }),
+        new HTMLWebpackPlugin({
+            filename: 'chats.html',
+            template: './chats.html'
         })
     ]
 };
