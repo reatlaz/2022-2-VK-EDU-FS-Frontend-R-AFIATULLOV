@@ -8,14 +8,15 @@
     <link href="style.css" rel="stylesheet"></head>
     <body>
         <nav>
-            
-            <div class="material-icons">
-                arrow_back
+            <div >
+                <a class="material-icons" href="chats.html">
+                    arrow_back
+                </a>
             </div>
-            <div class="receiver">
-                <img src="src/static/barsiq.png" class="receiver-avatar" alt="No picture found">
+            <div class="heading">
+                <img src="src/static/barsiq.png" class="user-avatar" alt="No picture found">
                 <div class="receiver-text">
-                    <div id="name">
+                    <div id="username">
                         Барсик
                     </div>
                     <div id="last-seen">
@@ -32,35 +33,36 @@
             </div>
         </nav>
         
-        <form class="form" action="/">
-            <div id="messages">
-                <div class="received-message">
-                    <p class="message-text">
-                        Мяу!
-                    </p>
-                    <div class="message-time">
-                        10:53
-                    </div>
-                </div>
-                <div class="received-message">
-                    <div class="message-text">
-                        Покорми меня! Покорми меня! Покорми меня! Покорми меня! Покорми меня! Покорми меня! Покорми меня!
-                    </div>
-                    <div class="message-time">
-                        10:53
-                    </div>
-                </div>
-                <div class="received-message">
-                    <div class="message-text">
-                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA Покорми меня! Покорми меня!
-                    </div>
-                    <div class="message-time">
-                        10:53
-                    </div>
-                </div>
 
+        <div id="messages">
+            <div class="received-message">
+                <p class="message-text">
+                    Мяу!
+                </p>
+                <div class="message-time">
+                    10:53
+                </div>
             </div>
-            
+            <div class="received-message">
+                <div class="message-text">
+                    Покорми меня! Покорми меня! Покорми меня! Покорми меня! Покорми меня! Покорми меня! Покорми меня!
+                </div>
+                <div class="message-time">
+                    10:53
+                </div>
+            </div>
+            <div class="received-message">
+                <div class="message-text">
+                    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA Покорми меня! Покорми меня!
+                </div>
+                <div class="message-time">
+                    10:53
+                </div>
+            </div>
+
+        </div>
+
+        <form class="form" action="/">
             <div id="text-input">
                 <input class="form-input" name="message-text"
                        placeholder="Cообщение" type="text">
