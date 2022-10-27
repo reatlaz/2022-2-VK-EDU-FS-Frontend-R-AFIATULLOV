@@ -21,13 +21,7 @@ body {
     display: block;
     background-color: rgb(242, 242, 242);
 }
-.heading {
 
-    flex-grow: 1;
-    align-items: center;
-    margin: 0;
-
-}
 
 #chats {
     background-color: white;
@@ -52,6 +46,13 @@ body>div>a {
 .chat {
     display: flex;
     width: 100%;
+    transition: background-color 0.5s;
+}
+.chat:hover {
+    background-color: #d3d3d3;
+}
+.chat:active {
+    background-color: #b2b2b2;
 }
 
 
@@ -66,9 +67,9 @@ body>div>a {
 }
 .chat-picture {
     border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    margin: 10px 10px 10px 20px;
+    width: 60px;
+    height: 60px;
+    margin: 7px 7px 7px 10px;
 }
 .chat-text-info {
     height: 100%;
@@ -86,10 +87,11 @@ body>div>a {
     text-overflow: ellipsis;
     line-height: normal;
     width: 100%;
-    font-size: 30px;
-    margin: 0px 10px 5px 20px;
+    font-size: 20px;
+    margin: 0px 10px 2px 10px;
 }
 .last-message {
+    font-size: 18px;
     white-space: nowrap;
     line-height: normal;
     overflow: clip;
@@ -97,7 +99,7 @@ body>div>a {
     width: 100%;
     opacity: 60%;
     padding: 0;
-    margin: 5px 10px 0px 20px;
+    margin: 2px 10px 0px 10px;
 }
 
 .delivered {
@@ -109,43 +111,65 @@ body>div>a {
 }
 .last-message-time{
     opacity: 60%;
-    font-size: 25px;
+    font-size: 15px;
 }
 .read-icons {
     margin-top: 10px;
-    font-size: 30px;
+    font-size: 20px;
     color: #77009C;
 }
 
 
-#create-chat {
-    font-size: 30px;
-    padding: 20px;
+.create-chat {
+    transition: all 0.2s;
+    font-size: 25px;
+    padding: 18px;
     margin: 20px;
     color: rgb(97, 79, 27);
     background-color: rgb(254, 207, 62);
     position: fixed;
     right: 0;
     bottom: 0;
-    size: 100px;
     border-radius: 50%;
     box-shadow: 0 4px 10px -3px;
+}
+.create-chat:hover {
+    animation: pulse 2s infinite;
+}
+.create-chat:active {
+    color: #333333;
+    background-color: rgb(97, 79, 27);
+}
+@keyframes pulse {
+    0% {
+        -moz-box-shadow: 0 0 0 0 rgba(204,169,44, 0.4);
+        box-shadow: 0 0 0 0 rgba(204,169,44, 0.4);
+    }
+    70% {
+        -moz-box-shadow: 0 0 0 10px rgba(204,169,44, 0);
+        box-shadow: 0 0 0 10px rgba(204,169,44, 0);
+    }
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(204,169,44, 0);
+        box-shadow: 0 0 0 0 rgba(204,169,44, 0);
+    }
 }
 
 .unread{
     color: white;
-    margin-top: 10px;
-    font-size: 25px;
-    padding: 6px;
+    margin-top: 5px;
+    font-size: 15px;
+    padding: 3px 5px;
     background-color: #7A0099FF;
     border-radius: 11px;
     font-family: Helvetica, Arial, sans-serif;
 }
 
 .unread-pinged{
-    margin-top: 10px;
-    font-size: 25px;
-    padding: 6px;
+    animation: pulse 2s infinite;
+    margin-top: 5px;
+    font-size: 15px;
+    padding: 3px 5px;
     background-color: rgb(254, 207, 62);
     border-radius: 11px;
     font-family: Helvetica, Arial, sans-serif;
