@@ -16,7 +16,7 @@ nav {
     position: sticky;
     top: 0;
     margin: 0;
-    height: min-content;
+    height: 60px;
     width: 100%;
     background-color: #77009C;
     color: #fff;
@@ -26,18 +26,24 @@ nav {
     padding: 0;
 }
 nav>div {
-    size: 110px;
-    margin: 30px;
+    size: 50px;
+    margin: 15px;
     color: white;
-
     background-color: transparent;
-
 }
 
 nav>div>a {
+    transition: background-color 0.5s;
     color: inherit;
     text-decoration: none;
+    border-radius: 50%;
 }
+nav>div>a:hover {
+    background-color: #590073;
+
+}
+
+
 
 body {
     margin: 0;
@@ -55,13 +61,17 @@ input[type=submit] {
 }
 
 input {
-
-    font-size: 40px;
+    width: 100%;
     border: 0;
     outline: none;
     flex-grow: 1;
+    font-size: 20px;
+    bottom: 0;
+}
 
-    
+
+input::placeholder  {
+    font-size: 20px;
 }
 
 #text-input {
@@ -74,16 +84,17 @@ input {
     height: auto;
     display: flex;
     flex-direction: row;
-    padding: 20px;
+    padding: 10px;
+    margin: 0;
 }
 
 .heading {
-
+    font-size: 30px;
     display: flex;
     flex-direction: row;
     flex-grow: 1;
     align-items: center;
-    margin: 0 0 0 15px;
+    margin: 0;
 
 }
 
@@ -96,19 +107,20 @@ input {
 
 .user-avatar {
     border-radius: 50%;
-    width: 110px;
-    height: 110px;
-    margin: 10px;
+    width: 45px;
+    height: 45px;
+    margin: 5px;
 }
 #username {
-    font-size: 60px;
-    margin: 20px;
+    font-size: 22px;
+    margin: 3px 10px;
 }
 #last-seen {
-    font-size: 40px;
+    font-size: 15px;
     opacity: 60%;
     padding: 0;
-    margin: 20px 20px 10px;
+    margin: 3px 10px;
+    line-height: 1;
 }
 
 .form {
@@ -116,6 +128,7 @@ input {
 }
 
 .message {
+    animation: slide-up 2s;
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -123,16 +136,26 @@ input {
     overflow-wrap: break-word;
     color: rgb(0, 0, 0);
     background-color: rgb(240, 221, 243);
-    border-radius: 10px 10px 0 10px;
+    border-radius: 5px 5px 0 5px;
     padding: 10px;
-    margin: 10px 50px 10px 10%;
+    margin: 5px 25px 5px 10%;
     height: auto;
     width: max-content;
     max-width: 80%;
-    font-size: 50px;
+    font-size: 10px;
     bottom: 0;
     align-items: flex-end;
     position: relative;
+}
+
+@keyframes slide-up {
+    from {
+        margin-top: 100%;
+    }
+
+    to {
+        margin-top: 10px;
+    }
 }
 
 .message:after {
@@ -142,12 +165,12 @@ input {
     bottom: 0;
     width: 0;
     height: 0;
-    border: 30px solid transparent;
+    border: 15px solid transparent;
     border-left-color: rgb(240, 221, 243);
     border-right: 0;
     border-bottom: 0;
-    margin-top: -15px;
-    margin-right: -30px;
+    margin-top: -7.5px;
+    margin-right: -15px;
 }
 
 .received-message {
@@ -158,13 +181,13 @@ input {
     align-self: flex-start;
     color: rgb(0, 0, 0);
     background-color: white;
-    border-radius: 10px 10px 10px 0;
+    border-radius: 5px 5px 5px 0;
     padding: 10px;
-    margin: 10px 10% 10px 50px;
+    margin: 5px 10% 5px 25px;
     height: auto;
     width: max-content;
     max-width: 80%;
-    font-size: 50px;
+    font-size: 10px;
     bottom: 0;
     align-items: flex-end;
     position: relative;
@@ -177,12 +200,12 @@ input {
     bottom: 0;
     width: 0;
     height: 0;
-    border: 30px solid transparent;
+    border: 15px solid transparent;
     border-right-color: white;
     border-left: 0;
     border-bottom: 0;
-    margin-top: -15px;
-    margin-left: -30px;
+    margin-top: -7.5px;
+    margin-left: -15px;
 }
 
 .message-text {
@@ -191,9 +214,9 @@ input {
     overflow-wrap: anywhere;
     line-height: 1;
     align-self: flex-start;
-    font-size: 50px;
+    font-size: 25px;
     border: 0;
-    margin: 30px 30px 10px;
+    margin: 4px 8px 3px;
     height: max-content;
 }
 
@@ -201,14 +224,14 @@ input {
     display: flex;
     flex-direction: row;
     align-items: center;
-    font-size: 40px;
+    font-size: 20px;
     opacity: 60%;
     border: 0;
-    margin: 20px 20px 10px;
+    margin: 10px 10px 5px;
 }
 
 .material-icons {
-    font-size: 70px;
+    font-size: 30px;
 }
 
 #messages {
@@ -218,7 +241,7 @@ input {
     width: 100%;
     padding-top: 20px;
 
-    padding-bottom: 20%;
+    padding-bottom: 130px;
 
     display: flex;
     flex-direction: column;
@@ -251,13 +274,7 @@ body {
     display: block;
     background-color: rgb(242, 242, 242);
 }
-.heading {
 
-    flex-grow: 1;
-    align-items: center;
-    margin: 0;
-
-}
 
 #chats {
     background-color: white;
@@ -282,6 +299,13 @@ body>div>a {
 .chat {
     display: flex;
     width: 100%;
+    transition: background-color 0.5s;
+}
+.chat:hover {
+    background-color: #d3d3d3;
+}
+.chat:active {
+    background-color: #b2b2b2;
 }
 
 
@@ -296,9 +320,9 @@ body>div>a {
 }
 .chat-picture {
     border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    margin: 10px 10px 10px 20px;
+    width: 60px;
+    height: 60px;
+    margin: 7px 7px 7px 10px;
 }
 .chat-text-info {
     height: 100%;
@@ -316,10 +340,11 @@ body>div>a {
     text-overflow: ellipsis;
     line-height: normal;
     width: 100%;
-    font-size: 30px;
-    margin: 0px 10px 5px 20px;
+    font-size: 20px;
+    margin: 0px 10px 2px 10px;
 }
 .last-message {
+    font-size: 18px;
     white-space: nowrap;
     line-height: normal;
     overflow: clip;
@@ -327,7 +352,7 @@ body>div>a {
     width: 100%;
     opacity: 60%;
     padding: 0;
-    margin: 5px 10px 0px 20px;
+    margin: 2px 10px 0px 10px;
 }
 
 .delivered {
@@ -339,43 +364,65 @@ body>div>a {
 }
 .last-message-time{
     opacity: 60%;
-    font-size: 25px;
+    font-size: 15px;
 }
 .read-icons {
     margin-top: 10px;
-    font-size: 30px;
+    font-size: 20px;
     color: #77009C;
 }
 
 
-#create-chat {
-    font-size: 30px;
-    padding: 20px;
+.create-chat {
+    transition: all 0.2s;
+    font-size: 25px;
+    padding: 18px;
     margin: 20px;
     color: rgb(97, 79, 27);
     background-color: rgb(254, 207, 62);
     position: fixed;
     right: 0;
     bottom: 0;
-    size: 100px;
     border-radius: 50%;
     box-shadow: 0 4px 10px -3px;
+}
+.create-chat:hover {
+    animation: pulse 2s infinite;
+}
+.create-chat:active {
+    color: #333333;
+    background-color: rgb(97, 79, 27);
+}
+@keyframes pulse {
+    0% {
+        -moz-box-shadow: 0 0 0 0 rgba(204,169,44, 0.4);
+        box-shadow: 0 0 0 0 rgba(204,169,44, 0.4);
+    }
+    70% {
+        -moz-box-shadow: 0 0 0 10px rgba(204,169,44, 0);
+        box-shadow: 0 0 0 10px rgba(204,169,44, 0);
+    }
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(204,169,44, 0);
+        box-shadow: 0 0 0 0 rgba(204,169,44, 0);
+    }
 }
 
 .unread{
     color: white;
-    margin-top: 10px;
-    font-size: 25px;
-    padding: 6px;
+    margin-top: 5px;
+    font-size: 15px;
+    padding: 3px 5px;
     background-color: #7A0099FF;
     border-radius: 11px;
     font-family: Helvetica, Arial, sans-serif;
 }
 
 .unread-pinged{
-    margin-top: 10px;
-    font-size: 25px;
-    padding: 6px;
+    animation: pulse 2s infinite;
+    margin-top: 5px;
+    font-size: 15px;
+    padding: 3px 5px;
     background-color: rgb(254, 207, 62);
     border-radius: 11px;
     font-family: Helvetica, Arial, sans-serif;
