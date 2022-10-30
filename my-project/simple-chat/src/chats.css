@@ -94,7 +94,7 @@ body>div>a {
     font-size: 18px;
     white-space: nowrap;
     line-height: normal;
-    overflow: clip;
+    overflow-x: hidden;
     text-overflow: ellipsis;
     width: 100%;
     opacity: 60%;
