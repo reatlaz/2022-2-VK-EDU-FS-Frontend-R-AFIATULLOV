@@ -1,0 +1,52 @@
+.icon {
+  font-size: 30px;
+  margin: 0;
+  size: 20px;
+  margin: 0;
+  padding: 5px;
+  text-decoration: none;
+}
+
+.nav-button {
+  size: 20px;
+  margin: 10px;
+  padding: 0;
+  color: white;
+  background-color: transparent;
+  width: 40px;
+  height: 40px;
+  align-content: center;
+  justify-content: center;
+  background-color: transparent;
+  border: 0;
+  text-decoration: none;
+  transition: background-color 0.5s;
+  border-radius: 50%;
+}
+
+.nav-button:hover {
+  background-color: #590073;
+
+}
+
+
+.attach-button {
+  size: 20px;
+  margin: 0 20px 5px 5px;
+  padding: 0;
+  color: grey;
+  background-color: transparent;
+  width: 40px;
+  height: 40px;
+  align-content: center;
+  justify-content: center;
+  background-color: transparent;
+  border: 0;
+  text-decoration: none;
+  transition: background-color 0.5s;
+  border-radius: 50%;
+}
+
+.attach-button:hover {
+  background-color: #b6b6b6;
+}

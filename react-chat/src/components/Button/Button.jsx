@@ -1,13 +1,16 @@
 import React from 'react';
 import './Button.scss';
+import { Icon } from '@mui/material';
 
 export function Button(props) {
   return (
     <button
-      className="button"
+      className={props.type}
       onClick={props.onClick}
     >
-      {props.value}
+      <Icon className="icon" fontSize='30px'>
+        {props.value}
+      </Icon>
     </button>
   );
 }

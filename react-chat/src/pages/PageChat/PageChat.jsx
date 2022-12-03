@@ -1,9 +1,26 @@
 import React from 'react';
 import './PageChat.scss';
 
-import { Icon } from '@mui/material';
-import {Message, Button} from '../../components';
 
+import {Message, Button} from '../../components';
+import { grey } from '@mui/material/colors';
+
+function Messages(props) {
+  return (
+    <div id="messages">
+      <Message
+        isMine={false}
+        text={'Я вазу уронил'}
+        time='11:30'
+      />
+      <Message
+        isMine={true}
+        text={'Я вазу уронил'}
+        time='11:30'
+      />
+    </div>
+  )
+}
 
 export class PageChat extends React.Component {
   constructor(props) {
@@ -12,19 +29,14 @@ export class PageChat extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className='page-chat'>
         <nav>
-          <div>
-            <a className="material-icons" href="chats.html">
-              arrow_back
-            </a>
-          </div>
+          <Button type='nav-button' value='arrow_back'/>
           <div className="heading">
           <img
             src="src/static/barsiq.png"
             className="user-avatar"
             alt="Not found"
-
             />
             <div className="receiver-text">
               <div id="username">
@@ -33,34 +45,18 @@ export class PageChat extends React.Component {
               <div id="last-seen">
                 был 2 часа назад
               </div>
-            </div>
-              
+            </div> 
           </div>
-          <div className="material-icons">
-              search
-          </div>
-          <div className="material-icons">
-              more_vert
-          </div>
+          <Button type='nav-button' value='search'/>
+          <Button type='nav-button' value='more_vert'/>
         </nav>
 
-        <div id="messages">
-          <Message
-            isMine={false}
-            text={'Я вазу уронил'}
-            time='11:30'
-          />
-        </div>
+        <Messages/>
         <form className="form" action="/">
           <div id="text-input">
             <input className="form-input" name="message-text" placeholder="Cообщение" type="text"/>
-            <div className="material-icons"
-            style={{
-              alignSelf: 'center',
-              color: 'grey',
-              transform: [{ rotate: '90deg'}]}}
-              >{'attach_file'}</div>
-            </div>
+              <Button value='attachment' type='attach-button'/>
+          </div>
         </form>
     </div>
     );
