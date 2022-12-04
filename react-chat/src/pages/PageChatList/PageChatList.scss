@@ -108,7 +108,7 @@ body>div>a {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: end;
+    align-items: flex-end;
 }
 .last-message-time{
     opacity: 60%;
@@ -124,7 +124,6 @@ body>div>a {
 .create-chat {
   display: flex;
   justify-content: center;
-
   height: 70px;
   width: 70px;
   padding: 0;

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './PageChatList.scss';
 import {Button} from '../../components';
 
@@ -28,7 +28,7 @@ export class PageChatList extends React.Component {
         </nav>
         <div className="chats"> 
           <div className="chat" onClick={() => this.props.goToPage('PageChat')}>
-              <img src="src/static/barsiq.png" className="chat-picture" alt="No picture found"/>
+              <img src="src/static/barsiq.png" className="chat-picture" alt="Not found"/>
               <div className="chat-info">
                   <div className="chat-text-info" >
                       <div className="chat-name">
@@ -51,7 +51,7 @@ export class PageChatList extends React.Component {
           
 
           <div className="chat">
-            <img src="src/static/billy.jpeg" className="chat-picture" alt="No picture found"/>
+            <img src="src/static/billy.jpeg" className="chat-picture" alt="Not found"/>
             <div className="chat-info">
               <div className="chat-text-info">
                 <div className="chat-name">
@@ -73,7 +73,7 @@ export class PageChatList extends React.Component {
           </div>
 
           <div className="chat">
-            <img src="src/static/смешнявкин.JPG" className="chat-picture" alt="No picture found"/>
+            <img src="src/static/смешнявкин.JPG" className="chat-picture" alt="Not found"/>
             <div className="chat-info">
                 <div className="chat-text-info">
                     <div className="chat-name">
