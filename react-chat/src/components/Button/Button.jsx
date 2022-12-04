@@ -5,10 +5,10 @@ import { Icon } from '@mui/material';
 export function Button(props) {
   return (
     <button
-      className={props.type}
+      className={props.className}
       onClick={props.onClick}
     >
-      <Icon className="icon" fontSize='30px'>
+      <Icon className='icon' fontSize='30px'>
         {props.value}
       </Icon>
     </button>

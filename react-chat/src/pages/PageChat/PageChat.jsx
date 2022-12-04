@@ -3,7 +3,6 @@ import './PageChat.scss';
 import {Message, Button} from '../../components';
 
 function Messages(props) {
-  
   const messages = props.messages;
   var messagesJSX = null
   if (messages !== null) {
@@ -25,20 +24,6 @@ function Messages(props) {
 function MessageInputForm(props) {
   const [value, setValue] = useState('');
 
-  const getCurrentTime = () => {
-    const currentDate = new Date();
-      let hours = String(currentDate.getHours());
-      if (hours.length === 1) {
-          hours = '0' + hours
-      }
-      let minutes = String(currentDate.getMinutes());
-
-      if (minutes.length === 1) {
-          minutes = '0' + minutes
-      }
-      return hours + ":" + minutes;
-  }
-
   const handleChange = (event) => {
     setValue(event.target.value);
   }
@@ -47,7 +32,7 @@ function MessageInputForm(props) {
     
     if(value !== '') {
       const textString = value;
-      const timeString = getCurrentTime()
+      const timeString = getCurrentTime();
       const newMessage = {
         isMine: true,
         text: textString,
@@ -60,7 +45,6 @@ function MessageInputForm(props) {
       localStorageMessages.push(newMessage)
       localStorage.setItem('messages', JSON.stringify(localStorageMessages));
       setValue('');
-      console.log(localStorageMessages);
       props.changeState()
     }
   }
@@ -73,7 +57,7 @@ function MessageInputForm(props) {
           onChange={handleChange}
           value={value}
         />
-        <Button value='attach_file' type='attach-button'/>
+        <Button value='attach_file' className='attach-button'/>
       </div>
     </form>
   )
@@ -104,7 +88,11 @@ export class PageChat extends React.Component {
     return (
       <div className='page-chat'>
         <nav>
-          <Button type='nav-button' value='arrow_back'/>
+          <Button
+            className='nav-button'
+            value='arrow_back'
+            onClick={() => this.props.goToPage('PageChatList')}
+          />
           <div className="heading">
           <img
             src="src/static/barsiq.png"
@@ -120,8 +108,8 @@ export class PageChat extends React.Component {
               </div>
             </div> 
           </div>
-          <Button type='nav-button' value='search'/>
-          <Button type='nav-button' value='more_vert'/>
+          <Button className='nav-button' value='search'/>
+          <Button className='nav-button' value='more_vert'/>
         </nav>
         <Messages messages={this.state.messages}/>
         <MessageInputForm
@@ -131,4 +119,19 @@ export class PageChat extends React.Component {
     </div>
     );
   }
+}
+
+
+function getCurrentTime() {
+  const currentDate = new Date();
+    let hours = String(currentDate.getHours());
+    if (hours.length === 1) {
+        hours = '0' + hours
+    }
+    let minutes = String(currentDate.getMinutes());
+
+    if (minutes.length === 1) {
+        minutes = '0' + minutes
+    }
+    return hours + ":" + minutes;
 }
