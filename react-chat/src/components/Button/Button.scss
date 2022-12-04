@@ -1,25 +1,25 @@
 .icon {
   font-size: 30px;
-  margin: 0;
-  size: 20px;
-  margin: 0;
-  padding: 5px;
   text-decoration: none;
+  text-align: center;
+  margin: auto;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
 }
 
 .nav-button {
-  size: 20px;
+  line-height: 0px;
+  size: 40px;
   margin: 10px;
   padding: 0;
   color: white;
   background-color: transparent;
   width: 40px;
   height: 40px;
-  align-content: center;
-  justify-content: center;
   background-color: transparent;
   border: 0;
-  text-decoration: none;
+
   transition: background-color 0.5s;
   border-radius: 50%;
 }
@@ -29,22 +29,20 @@
 
 }
 
-
 .attach-button {
-  size: 20px;
-  margin: 0 20px 5px 5px;
+  align-self: center;
+  display: flex;
+  
   padding: 0;
   color: grey;
   background-color: transparent;
+  border: 0;
   width: 40px;
   height: 40px;
-  align-content: center;
-  justify-content: center;
-  background-color: transparent;
-  border: 0;
   text-decoration: none;
   transition: background-color 0.5s;
   border-radius: 50%;
+  transform: rotate(90deg);
 }
 
 .attach-button:hover {

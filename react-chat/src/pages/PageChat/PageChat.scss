@@ -1,3 +1,16 @@
+html {
+    box-sizing: border-box;
+    height: 100vh;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+::placeholder {
+    font-size: 40px;
+}
 body {
     margin: 0;
     color: #333;
@@ -33,7 +46,7 @@ input::placeholder  {
   width: calc(100% - 2px);
   position: fixed;
   bottom: 0;
-  height: 40px;
+  height: 55px;
   display: flex;
   flex-direction: row;
   padding: 10px;
@@ -74,7 +87,6 @@ input::placeholder  {
 }
 
 .form {
-  width: 100%;
 }
 
 #messages {
