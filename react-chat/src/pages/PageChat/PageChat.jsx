@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './PageChat.scss';
 import {Message, Button} from '../../components';
-
+import barsiq from '../../images/barsiq.png';
 function Messages(props) {
   const messages = props.messages;
   var messagesJSX = null
@@ -95,7 +95,7 @@ export class PageChat extends React.Component {
           />
           <div className="heading">
           <img
-            src="src/static/barsiq.png"
+            src={barsiq}
             className="user-avatar"
             alt="Not found"
             />
