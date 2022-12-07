@@ -1,0 +1,49 @@
+.icon {
+  font-size: 30px;
+  text-decoration: none;
+  text-align: center;
+  margin: auto;
+  width: 40px;
+  height: 40px;
+  
+}
+
+.nav-button {
+  line-height: 0px;
+  size: 40px;
+  margin: 10px;
+  padding: 0;
+  color: white;
+  background-color: transparent;
+  width: 40px;
+  height: 40px;
+  border: 0;
+
+  transition: background-color 0.5s;
+  border-radius: 50%;
+}
+
+.nav-button:hover {
+  background-color: #590073;
+
+}
+
+.attach-button {
+  align-self: center;
+  display: flex;
+  
+  padding: 0;
+  color: grey;
+  background-color: transparent;
+  border: 0;
+  width: 40px;
+  height: 40px;
+  text-decoration: none;
+  transition: background-color 0.5s;
+  border-radius: 50%;
+  transform: rotate(90deg);
+}
+
+.attach-button:hover {
+  background-color: #b6b6b6;
+}

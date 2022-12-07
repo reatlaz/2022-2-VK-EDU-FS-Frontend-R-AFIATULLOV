@@ -1,0 +1,112 @@
+html {
+    box-sizing: border-box;
+    height: 100vh;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+::placeholder {
+    font-size: 40px;
+}
+body {
+    margin: 0;
+    color: #333;
+    font-size: 20px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    line-height: 20px;
+    display: block;
+    background-color: rgb(242, 242, 242);
+}
+
+input[type=submit] {
+  visibility: collapse;
+}
+
+input {
+  width: 100%;
+  border: 0;
+  outline: none;
+  flex-grow: 1;
+  font-size: 20px;
+  bottom: 0;
+}
+
+
+input::placeholder  {
+    font-size: 20px;
+}
+
+#text-input {
+  background-color: white;
+  border: 1px solid rgba(25, 25, 25, 0.32);
+  width: calc(100% - 2px);
+  position: fixed;
+  bottom: 0;
+  height: 55px;
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  margin: 0;
+}
+
+.heading {
+  font-size: 30px;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  align-items: center;
+  margin: 0;
+}
+
+.receiver-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.user-avatar {
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  margin: 5px;
+}
+#username {
+  font-size: 22px;
+  margin: 3px 10px;
+}
+#last-seen {
+  font-size: 15px;
+  opacity: 60%;
+  padding: 0;
+  margin: 3px 10px;
+  line-height: 1;
+}
+
+.form {
+}
+
+#messages {
+    overflow-y: scroll;
+    height: max-content;
+
+    width: 100%;
+    padding-top: 20px;
+
+    padding-bottom: 130px;
+
+    display: flex;
+    flex-direction: column;
+
+}
+
+.page-chat {
+  width: 100%;
+}
+
+img {
+  font-size: 15px;
+}
