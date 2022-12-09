@@ -1,32 +1,28 @@
 import React from 'react';
+import {HashRouter as Router, Routes, Route} from 'react-router-dom'
 //import logo from './logo.svg';
 import './App.css';
 
-import {PageChat, PageChatList} from './pages';
+import {PageChat, PageChatList, PageProfile} from './pages';
 
+function App()  {
+  return (
+    <Router>
+      <div className='App'>
+        <Routes>
+          <Route path='/im/1' element={<PageChat userId='1'/>}/>
+          <Route path='/im/2' element={<PageChat userId='2'/>}/>
+          <Route path='/im/3' element={<PageChat userId='3'/>}/>
+          <Route path='/user/1' element={<PageProfile userId='1'/>}/>
+          <Route path='/user/2' element={<PageProfile userId='2'/>}/>
+          <Route path='/user/3' element={<PageProfile userId='3'/>}/>
+          <Route path='/im' element={<PageChatList/>}/>
+        </Routes>
 
-class App extends React.Component  {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentPage: PageChat,
-      pages: new Map([
-        ['PageChat', PageChat],
-        ['PageChatList', PageChatList],
-      ])
-    };
-  }
-  goTo(nextPage) {
-    this.setState({
-      currentPage: this.state.pages.get(nextPage), 
-    })
-  }
-  render() {
-    return (
-      React.createElement(this.state.currentPage,
-        {goToPage: (page) => {console.log(page); this.goTo(page)}})
-    );
-  }
+      </div>
+    </Router>
+  );
+  
 }
 
 export default App;

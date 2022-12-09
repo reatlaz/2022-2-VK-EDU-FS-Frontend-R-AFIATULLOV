@@ -4,6 +4,7 @@ import {Button} from '../../components';
 import barsiq from '../../images/barsiq.png';
 import billy from '../../images/billy.jpeg';
 import smesh from '../../images/смешнявкин.JPG';
+import { Link } from 'react-router-dom';
 
 export class PageChatList extends React.Component {
   constructor(props) {
@@ -29,7 +30,7 @@ export class PageChatList extends React.Component {
             <Button value='search' className="nav-button"/>
         </nav>
         <div className="chats"> 
-          <div className="chat" onClick={() => this.props.goToPage('PageChat')}>
+          <Link className="chat" to="/im/1">
               <img src={barsiq} className="chat-picture" alt="Not found"/>
               <div className="chat-info">
                   <div className="chat-text-info" >
@@ -49,10 +50,10 @@ export class PageChatList extends React.Component {
                       </div>
                   </div>
               </div>
-          </div>
+          </Link>
           
 
-          <div className="chat">
+          <Link className="chat" to="/im/2">
             <img src={billy} className="chat-picture" alt="Not found"/>
             <div className="chat-info">
               <div className="chat-text-info">
@@ -72,9 +73,9 @@ export class PageChatList extends React.Component {
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="chat">
+          <Link className="chat" to="/im/3">
             <img src={smesh} className="chat-picture" alt="Not found"/>
             <div className="chat-info">
                 <div className="chat-text-info">
@@ -97,7 +98,7 @@ export class PageChatList extends React.Component {
 
                 </div>
             </div>
-          </div>
+          </Link>
           <Button value='edit' className="create-chat"/>
         </div>
       </div>

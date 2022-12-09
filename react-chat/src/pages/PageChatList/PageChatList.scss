@@ -23,19 +23,10 @@ body {
 }
 
 
-#chats {
-    background-color: white;
+.chats {
     overflow-y: scroll;
-    height: 30%;
-    max-height: 80%;
-    width: 100%;
-    padding-top: 20px;
-
-    padding-bottom: 10px;
-
     display: flex;
     flex-direction: column;
-
 }
 
 body>div>a {
@@ -45,6 +36,7 @@ body>div>a {
 
 .chat {
     text-decoration: none;
+    color: inherit;
     display: flex;
     width: 100%;
     transition: background-color 0.5s;
@@ -83,6 +75,7 @@ body>div>a {
 
 }
 .chat-name {
+    text-align: left;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -92,6 +85,7 @@ body>div>a {
     margin: 0px 10px 2px 10px;
 }
 .last-message {
+    text-align: left;
     font-size: 18px;
     white-space: nowrap;
     line-height: normal;
@@ -183,7 +177,6 @@ body>div>a {
 
 
 
-
 .heading {
   font-size: 30px;
   display: flex;
@@ -199,17 +192,11 @@ body>div>a {
   justify-content: space-around;
 }
 
-.user-avatar {
-  border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  margin: 5px;
-}
-#username {
+.username {
   font-size: 22px;
   margin: 3px 10px;
 }
-#last-seen {
+.last-seen {
   font-size: 15px;
   opacity: 60%;
   padding: 0;
