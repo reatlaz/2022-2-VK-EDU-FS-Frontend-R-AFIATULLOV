@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import { Icon } from '@mui/material';
-import {Link} from 'react-router-dom'
 import './PageProfile.scss';
-import {Message, Button} from '../../components';
+import {Button} from '../../components';
 import barsiq from '../../images/barsiq.png';
 import billy from '../../images/billy.jpeg';
 import smesh from '../../images/смешнявкин.JPG';
@@ -43,11 +42,11 @@ function ProfileInputForm(props) {
         
         return
       }
-      const newProfile = {
-        fullName: fullName,
-        username: username,
-        bio: bio,
-      };
+      // const newProfile = {
+      //   fullName: fullName,
+      //   username: username,
+      //   bio: bio,
+      // };
       };
       //insert for submission logic here
       console.log('form submitted');
