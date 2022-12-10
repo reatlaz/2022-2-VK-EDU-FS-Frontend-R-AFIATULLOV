@@ -12,7 +12,7 @@
   padding: 10px;
   margin: 5px 25px 5px 10%;
   height: auto;
-  width: max-content;
+  width: fit-content;
   max-width: 80%;
   font-size: 10px;
   bottom: 0;
@@ -46,6 +46,7 @@
 }
 
 .message {
+  text-align: left;
   display: flex;
   overflow-wrap: break-word;
   flex-direction: column;
@@ -82,7 +83,7 @@
 
 
 .message-text {
-
+  width: fit-content;
   display: flex;
   overflow-wrap: anywhere;
   line-height: 1;

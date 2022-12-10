@@ -1,16 +1,17 @@
 import React from 'react';
+import {Link} from 'react-router-dom'
 import './Button.scss';
 import { Icon } from '@mui/material';
 
 export function Button(props) {
   return (
-    <button
+    <Link
       className={props.className}
-      onClick={props.onClick}
+      to={props.goTo}
     >
       <Icon className='icon' fontSize='30px'>
         {props.value}
       </Icon>
-    </button>
+    </Link>
   );
 }

@@ -1,7 +1,10 @@
 import React, {useState} from 'react';
+import {Link} from 'react-router-dom'
 import './PageChat.scss';
 import {Message, Button} from '../../components';
 import barsiq from '../../images/barsiq.png';
+import billy from '../../images/billy.jpeg';
+import smesh from '../../images/смешнявкин.JPG';
 function Messages(props) {
   const messages = props.messages;
   var messagesJSX = null
@@ -15,7 +18,7 @@ function Messages(props) {
       />)
   }
   return (
-    <div id="messages">
+    <div className="messages">
       {messagesJSX}
     </div>
   )
@@ -38,12 +41,12 @@ function MessageInputForm(props) {
         text: textString,
         time: timeString,
       }
-      let localStorageMessages = JSON.parse(localStorage.getItem("messages"));
+      let localStorageMessages = JSON.parse(localStorage.getItem('messages' + props.userId));
       if(localStorageMessages === null) {
           localStorageMessages = [];
       }
       localStorageMessages.push(newMessage)
-      localStorage.setItem('messages', JSON.stringify(localStorageMessages));
+      localStorage.setItem('messages' + props.userId, JSON.stringify(localStorageMessages));
       setValue('');
       props.changeState()
     }
@@ -51,8 +54,8 @@ function MessageInputForm(props) {
 
   return(
     <form className="form" onSubmit={handleSubmit}>
-      <div id="text-input">
-        <input className="form-input"
+      <div className="text-input">
+        <input className="message-input"
           placeholder="Cообщение"
           onChange={handleChange}
           value={value}
@@ -66,22 +69,39 @@ function MessageInputForm(props) {
 export class PageChat extends React.Component {
   constructor(props) {
     super(props);
-    let localStorageMessages = JSON.parse(localStorage.getItem("messages"));
+    let localStorageMessages = JSON.parse(localStorage.getItem("messages" + this.props.userId));
     if(localStorageMessages === null) {
-      localStorageMessages = [{
+      if (this.props.userId === '1') {
+        localStorageMessages = [{
         isMine: false,
         text: 'Я вазу уронил',
         time: '00:01',
         }];
-      localStorage.setItem('messages', JSON.stringify(localStorageMessages));
+        localStorage.setItem('messages1', JSON.stringify(localStorageMessages));
+      } else if (this.props.userId === '2') {
+        localStorageMessages = [{
+        isMine: false,
+        text: 'Do you like what you see?',
+        time: '00:03',
+        }];
+        localStorage.setItem('messages2', JSON.stringify(localStorageMessages));
+      } else if (this.props.userId === '3') {
+        localStorageMessages = [{
+        isMine: false,
+        text: 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',
+        time: '00:04',
+        }];
+        localStorage.setItem('messages3', JSON.stringify(localStorageMessages));
+      }
+      
     }
     this.state ={
       messages: localStorageMessages
       }
   };
-  changeState() {
+  changeState(props) {
     this.setState({
-      messages: JSON.parse(localStorage.getItem("messages"))
+      messages: JSON.parse(localStorage.getItem("messages" + this.props.userId))
       })
   }
   render() {
@@ -91,23 +111,31 @@ export class PageChat extends React.Component {
           <Button
             className='nav-button'
             value='arrow_back'
-            onClick={() => this.props.goToPage('PageChatList')}
+            goTo={'/im'}
           />
-          <div className="heading">
-          <img
-            src={barsiq}
-            className="user-avatar"
-            alt="Not found"
+          <Link className="chat-heading" to={'/user/' + this.props.userId}>
+            <img
+              src={
+                (this.props.userId === '1' && barsiq) ||
+                (this.props.userId === '2' && billy) ||
+                (this.props.userId === '3' && smesh)
+                }
+              className="user-avatar"
+              alt="Not found"
             />
             <div className="receiver-text">
-              <div id="username">
-                Барсик
+              <div className="username">
+                {
+                  (this.props.userId === '1' && 'Барсик') ||
+                  (this.props.userId === '2' && 'Billy') ||
+                  (this.props.userId === '3' && 'Беседа классааааааааааааааааааааа')
+                }
               </div>
-              <div id="last-seen">
+              <div className="last-seen">
                 был 2 часа назад
               </div>
             </div> 
-          </div>
+          </Link>
           <Button className='nav-button' value='search'/>
           <Button className='nav-button' value='more_vert'/>
         </nav>
@@ -115,6 +143,7 @@ export class PageChat extends React.Component {
         <MessageInputForm
           changeState={() => this.changeState()}
           onSubmit={this.handleSubmit}
+          userId={this.props.userId}
         />
     </div>
     );
