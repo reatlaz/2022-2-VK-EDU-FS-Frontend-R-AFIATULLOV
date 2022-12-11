@@ -134,6 +134,7 @@ body>div>a {
   box-shadow: 0 4px 10px -3px;
 }
 .create-chat:hover {
+    box-shadow: 0 0 0 0;
     animation: pulse 2s infinite;
 }
 .create-chat:active {
