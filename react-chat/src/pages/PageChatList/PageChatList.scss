@@ -24,7 +24,8 @@ body {
 
 
 .chats {
-    overflow-y: scroll;
+    height: 100%;
+    overflow-y: hidden;
     display: flex;
     flex-direction: column;
 }

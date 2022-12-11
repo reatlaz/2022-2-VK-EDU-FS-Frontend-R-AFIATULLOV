@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import {Link, useParams} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import './PageChat.scss';
 import {Message, Button} from '../../components';
-import barsiq from '../../images/barsiq.png';
+import vkfs from '../../images/vkfs.jpg';
 
 function Messages(props) {
   const messages = props.messages;
@@ -38,13 +38,13 @@ function MessageInputForm(props) {
       }
       props.postData(newMessage);
       props.pollItems();
-      
-      let localStorageMessages = JSON.parse(localStorage.getItem('messages' + props.userId));
+
+      let localStorageMessages = JSON.parse(localStorage.getItem('messagesGeneral'));
       if(localStorageMessages === null) {
           localStorageMessages = [];
       }
       localStorageMessages.push(newMessage)
-      localStorage.setItem('messages' + props.userId, JSON.stringify(localStorageMessages));
+      localStorage.setItem('messagesGeneral', JSON.stringify(localStorageMessages));
       setValue('');
       props.changeState()
     }
@@ -64,29 +64,28 @@ function MessageInputForm(props) {
   )
 }
 
-export function PageChat () {
-  let { id } = useParams();
+export function PageGeneralChat () {
   const [error, setError] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const pollItems = () => { fetch('https://reatlaz.pythonanywhere.com/chats/' + id, {
+  // const [isLoaded, setIsLoaded] = useState(false);
+  const pollItems = () => { fetch('https://tt-front.vercel.app/messages/', {
     mode: 'cors',
     headers: {'Access-Control-Allow-Origin': '*'}
     })
     .then(resp => resp.json())
     .then(data => {
-      setIsLoaded(true);
+      // setIsLoaded(true);
       setMessages(data.sort((a, b) => a.timestamp.localeCompare(b.timestamp)));
       console.log(data)
-      localStorage.setItem('messages' + id, JSON.stringify(data));
+      localStorage.setItem('messagesGeneral', JSON.stringify(data));
     },
     (error) => {
-          setIsLoaded(true);
+          // setIsLoaded(true);
           setError(error);
         });
   }
   const postData = (data) => {
-    console.log(JSON.stringify(data));
+    //console.log(JSON.stringify(data));
     fetch('https://tt-front.vercel.app/message/', {
       method: 'POST',
       mode: 'cors',
@@ -98,28 +97,27 @@ export function PageChat () {
       })
       .then(resp => resp.json())
       .then(data => {
-        setIsLoaded(true);
+        // setIsLoaded(true);
         setMessages(data.sort((a, b) => a.timestamp.localeCompare(b.timestamp)));
         console.log(data)
-        localStorage.setItem('messages' + id, JSON.stringify(data));
+        localStorage.setItem('messagesGeneral', JSON.stringify(data));
       },
       (error) => {
-      setIsLoaded(true);
+      // setIsLoaded(true);
       setError(error);
     });
   }
-  
   useEffect( () => {
-    const localStorageMessages = JSON.parse(localStorage.getItem("messages" + id));
+    const localStorageMessages = JSON.parse(localStorage.getItem('messagesGeneral'));
     if (localStorageMessages != null) {
       setMessages(localStorageMessages);
     }
     pollItems();
     const t = setInterval(() => pollItems(), 10000);
     return () => clearInterval(t)
-  }, [id]);
+  }, []);
   const changeState = (props) => {
-  setMessages(JSON.parse(localStorage.getItem("messages" + id)))
+  setMessages(JSON.parse(localStorage.getItem('messagesGeneral')))
   }
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -132,23 +130,20 @@ export function PageChat () {
           value='arrow_back'
           goTo={'/im'}
         />
-        <Link className="chat-heading" to={'/user/' + id}>
+        <Link className="chat-heading"
+        // to={'/user/' + id}
+        >
           <img
-            src={barsiq}
+            src={vkfs}
             className="user-avatar"
             alt="Not found"
           />
           <div className="receiver-text">
             <div className="username">
-              {
-                (id === '0' && 'Общий чат') ||
-                (id === '1' && 'Барсик') ||
-                (id === '2' && 'Billy') ||
-                (id === '3' && 'Беседа классааааааааааааааааааааа')
-              }
+                Общий чат
             </div>
             <div className="last-seen">
-              был 2 часа назад
+
             </div>
           </div> 
         </Link>
@@ -158,7 +153,6 @@ export function PageChat () {
       <Messages messages={messages}/>
       <MessageInputForm
         changeState={changeState}
-        id={id}
         postData={postData}
         pollItems={pollItems}
       />

@@ -8,7 +8,7 @@ export function Message(props) {
         {props.text}
       </div>
       <div className="message-time">
-        {props.time}
+        {props.sender + ' at ' + props.time}
       </div>
     </div>
   )
