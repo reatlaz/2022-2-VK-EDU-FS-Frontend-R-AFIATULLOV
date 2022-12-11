@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {Link, useParams} from 'react-router-dom'
 import './PageChat.scss';
 import {Message, Button} from '../../components';
@@ -68,20 +68,20 @@ export function PageChat () {
   let { id } = useParams();
   const [error, setError] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  // const [isLoaded, setIsLoaded] = useState(false);
   const pollItems = () => { fetch('https://reatlaz.pythonanywhere.com/chats/' + id, {
     mode: 'cors',
     headers: {'Access-Control-Allow-Origin': '*'}
     })
     .then(resp => resp.json())
     .then(data => {
-      setIsLoaded(true);
+      // setIsLoaded(true);
       setMessages(data.sort((a, b) => a.timestamp.localeCompare(b.timestamp)));
       console.log(data)
       localStorage.setItem('messages' + id, JSON.stringify(data));
     },
     (error) => {
-          setIsLoaded(true);
+          // setIsLoaded(true);
           setError(error);
         });
   }
@@ -98,26 +98,42 @@ export function PageChat () {
       })
       .then(resp => resp.json())
       .then(data => {
-        setIsLoaded(true);
+        // setIsLoaded(true);
         setMessages(data.sort((a, b) => a.timestamp.localeCompare(b.timestamp)));
         console.log(data)
         localStorage.setItem('messages' + id, JSON.stringify(data));
       },
       (error) => {
-      setIsLoaded(true);
+      // setIsLoaded(true);
       setError(error);
     });
   }
-  
+  const pollCallback = useCallback(
+    () => { fetch('https://reatlaz.pythonanywhere.com/chats/' + id, {
+      mode: 'cors',
+      headers: {'Access-Control-Allow-Origin': '*'}
+      })
+      .then(resp => resp.json())
+      .then(data => {
+        // setIsLoaded(true);
+        setMessages(data.sort((a, b) => a.timestamp.localeCompare(b.timestamp)));
+        console.log(data)
+        localStorage.setItem('messages' + id, JSON.stringify(data));
+      },
+      (error) => {
+            // setIsLoaded(true);
+            setError(error);
+          });
+    }, [id]);
   useEffect( () => {
     const localStorageMessages = JSON.parse(localStorage.getItem("messages" + id));
     if (localStorageMessages != null) {
       setMessages(localStorageMessages);
     }
-    pollItems();
-    const t = setInterval(() => pollItems(), 10000);
+    pollCallback();
+    const t = setInterval(() => pollCallback(), 10000);
     return () => clearInterval(t)
-  }, [id]);
+  }, [id, pollCallback]);
   const changeState = (props) => {
   setMessages(JSON.parse(localStorage.getItem("messages" + id)))
   }
