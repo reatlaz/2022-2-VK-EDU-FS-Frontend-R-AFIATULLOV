@@ -3,7 +3,7 @@ import {Link, useParams} from 'react-router-dom'
 import './PageChat.scss';
 import {Message, Button} from '../../components';
 import barsiq from '../../images/barsiq.png';
-
+import {getTimeFromISOString} from '../'
 function Messages(props) {
   const messages = props.messages;
   var messagesJSX = null
@@ -11,9 +11,10 @@ function Messages(props) {
     messagesJSX = messages.map((msg, index) =>
       <Message
         key={index}
-        text={msg.text}
-        time={getTimeFromISOString(msg.timestamp)}
-        sender={msg.author}
+        text={msg.content}
+        time={getTimeFromISOString(msg.created_at)}
+        sender={msg.sender === 'guest' ? ' ' : msg.sender}
+        isMine={msg.sender === 'guest'}
       />)
   }
   return (
@@ -33,11 +34,10 @@ function MessageInputForm(props) {
     event.preventDefault();
     if(value !== '') {
       const newMessage = {
-        author: 'ReAtlaz',
-        text: value,
+        content: value,
       }
-      props.postData(newMessage);
-      props.pollItems();
+      props.postMessage(newMessage);
+      props.pollCallback();
       
       let localStorageMessages = JSON.parse(localStorage.getItem('messages' + props.userId));
       if(localStorageMessages === null) {
@@ -68,26 +68,27 @@ export function PageChat () {
   let { id } = useParams();
   const [error, setError] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [chat, setChat] = useState({name: ''});
+  const [lastLogin, setLastLogin] = useState('');
   // const [isLoaded, setIsLoaded] = useState(false);
-  const pollItems = () => { fetch('https://reatlaz.pythonanywhere.com/chats/' + id, {
+
+
+  useEffect(() => {
+    fetch('https://reatlaz.pythonanywhere.com/chats/' + id, {
     mode: 'cors',
-    headers: {'Access-Control-Allow-Origin': '*'}
     })
     .then(resp => resp.json())
-    .then(data => {
-      // setIsLoaded(true);
-      setMessages(data.sort((a, b) => a.timestamp.localeCompare(b.timestamp)));
-      console.log(data)
-      localStorage.setItem('messages' + id, JSON.stringify(data));
+    .then(chatInfo => {
+      console.log(chatInfo.data)
+      setChat(chatInfo.data.chat);
+      setLastLogin(chatInfo.data.last_login);
     },
-    (error) => {
-          // setIsLoaded(true);
-          setError(error);
-        });
-  }
-  const postData = (data) => {
+    (error) => setError(error));
+  }, [id])
+
+  const postMessage = (data) => {
     console.log(JSON.stringify(data));
-    fetch('https://tt-front.vercel.app/message/', {
+    fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -98,30 +99,24 @@ export function PageChat () {
       })
       .then(resp => resp.json())
       .then(data => {
-        // setIsLoaded(true);
-        setMessages(data.sort((a, b) => a.timestamp.localeCompare(b.timestamp)));
+        pollCallback(); // get the newly sent message from server
         console.log(data)
-        localStorage.setItem('messages' + id, JSON.stringify(data));
       },
-      (error) => {
-      // setIsLoaded(true);
-      setError(error);
-    });
+      (error) => setError(error));
   }
   const pollCallback = useCallback(
-    () => { fetch('https://reatlaz.pythonanywhere.com/chats/' + id, {
+    () => { fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
       mode: 'cors',
       headers: {'Access-Control-Allow-Origin': '*'}
       })
       .then(resp => resp.json())
-      .then(data => {
-        // setIsLoaded(true);
-        setMessages(data.sort((a, b) => a.timestamp.localeCompare(b.timestamp)));
-        console.log(data)
-        localStorage.setItem('messages' + id, JSON.stringify(data));
+      .then(newChats => {
+        console.log(newChats.data)
+        setMessages(newChats.data);
+
+        localStorage.setItem('messages' + id, JSON.stringify(newChats.data));
       },
       (error) => {
-            // setIsLoaded(true);
             setError(error);
           });
     }, [id]);
@@ -140,51 +135,66 @@ export function PageChat () {
   if (error) {
     return <div>Error: {error.message}</div>;
   } else {
-  return (
-    <div className='page-chat'>
-      <nav>
-        <Button
-          className='nav-button'
-          value='arrow_back'
-          goTo={'/im'}
-        />
-        <Link className="chat-heading" to={'/user/' + id}>
-          <img
-            src={barsiq}
-            className="user-avatar"
-            alt="Not found"
+    return (
+      <div className='page-chat'>
+        <nav>
+          <Button
+            className='nav-button'
+            value='arrow_back'
+            goTo={'/im'}
           />
-          <div className="receiver-text">
-            <div className="username">
-              {
-                (id === '0' && 'Общий чат') ||
-                (id === '1' && 'Барсик') ||
-                (id === '2' && 'Billy') ||
-                (id === '3' && 'Беседа классааааааааааааааааааааа')
-              }
-            </div>
-            <div className="last-seen">
-              был 2 часа назад
-            </div>
-          </div> 
-        </Link>
-        <Button className='nav-button' value='search'/>
-        <Button className='nav-button' value='more_vert'/>
-      </nav>
-      <Messages messages={messages}/>
-      <MessageInputForm
-        changeState={changeState}
-        id={id}
-        postData={postData}
-        pollItems={pollItems}
-      />
-  </div>
-  );
+          <Link className="chat-heading" to={'/user/' + id}>
+            <img
+              src={barsiq}
+              className="user-avatar"
+              alt="Not found"
+            />
+            <div className="receiver-text">
+              <div className="username">
+                {chat.name}
+              </div>
+              {chat.is_private && <div className="last-seen">{timeSince(lastLogin)}</div>}
+            </div> 
+          </Link>
+          <Button className='nav-button' value='search'/>
+          <Button className='nav-button' value='more_vert'/>
+        </nav>
+        <Messages messages={messages}/>
+        <MessageInputForm
+          changeState={changeState}
+          id={id}
+          postMessage={postMessage}
+          pollCallback={pollCallback}
+        />
+    </div>
+    );
   }
 }
 
+function timeSince(isoString) {
+  const date = new Date(isoString);
+  var seconds = Math.floor((new Date() - date) / 1000);
 
-function getTimeFromISOString(timestamp) {
-  return new Date(timestamp).toLocaleTimeString('en',
-                 { timeStyle: 'short', hour12: false, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
+  var interval = seconds / 31536000;
+
+  if (interval > 1) {
+    return 'был(а) в сети ' + Math.floor(interval) + ' лет назад';
+  }
+  interval = seconds / 2592000;
+  if (interval > 1) {
+    return 'был(а) в сети ' + Math.floor(interval) + ' месяцев назад';
+  }
+  interval = seconds / 86400;
+  if (interval > 1) {
+    return 'был(а) в сети ' + Math.floor(interval) + ' дней назад';
+  }
+  interval = seconds / 3600;
+  if (interval > 1) {
+    return 'был(а) в сети ' + Math.floor(interval) + ' часов назад';
+  }
+  interval = seconds / 60;
+  if (interval > 1) {
+    return 'был(а) в сети ' + Math.floor(interval) + ' минут назад';
+  }
+  return 'был(а) в сети ' + Math.floor(seconds) + ' секунд назад';
 }

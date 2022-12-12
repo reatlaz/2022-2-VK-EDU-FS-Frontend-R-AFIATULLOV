@@ -13,7 +13,8 @@ function Messages(props) {
         key={index}
         text={msg.text}
         time={getTimeFromISOString(msg.timestamp)}
-        sender={msg.author}
+        sender={msg.author === 'ReAtlaz' ? '' : msg.author}
+        isMine={msg.author==='ReAtlaz'}
       />)
   }
   return (
@@ -163,6 +164,6 @@ export function PageGeneralChat () {
 
 
 function getTimeFromISOString(timestamp) {
-  return new Date(timestamp).toLocaleTimeString('en',
+  return new Date(timestamp).toLocaleTimeString('ru',
                  { timeStyle: 'short', hour12: false, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
 }
