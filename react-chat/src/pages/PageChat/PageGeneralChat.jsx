@@ -76,8 +76,8 @@ export function PageGeneralChat () {
     .then(resp => resp.json())
     .then(data => {
       // setIsLoaded(true);
-      setMessages(data.sort((a, b) => a.timestamp.localeCompare(b.timestamp)));
-      console.log(data)
+      setMessages(data);
+      // console.log(data)
       localStorage.setItem('messagesGeneral', JSON.stringify(data));
     },
     (error) => {
@@ -99,9 +99,9 @@ export function PageGeneralChat () {
       .then(resp => resp.json())
       .then(data => {
         // setIsLoaded(true);
-        setMessages(data.sort((a, b) => a.timestamp.localeCompare(b.timestamp)));
-        console.log(data)
-        localStorage.setItem('messagesGeneral', JSON.stringify(data));
+        //setMessages(data);
+        // console.log(data)
+        //localStorage.setItem('messagesGeneral', JSON.stringify(data));
       },
       (error) => {
       // setIsLoaded(true);
