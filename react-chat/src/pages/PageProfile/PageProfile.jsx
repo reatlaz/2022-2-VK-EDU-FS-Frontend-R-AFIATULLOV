@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useParams} from 'react-router-dom'
 import { Icon } from '@mui/material';
 import './PageProfile.scss';
 import {Button} from '../../components';
@@ -114,31 +115,32 @@ function ProfileInputForm(props) {
   )
 }
 
-export class PageProfile extends React.Component {
-  render() {
-    return (
-      <div className='page-chat'>
-        <nav>
-          <Button
-            className='nav-button'
-            value='arrow_back'
-            goTo={'/im/' + this.props.userId}
-          />
-          <div className="heading">
-            Edit Profile
-          </div>
-          <button form='profile-form' className='nav-button'>
-            <Icon className='icon' fontSize='30px'>
-              done
-            </Icon>
-          </button>
-        </nav>
-        <div className='profile-form'>
-          
-          <ProfileInputForm userId={this.props.userId}/>
+export function PageProfile(){
+  let { id } = useParams();
+
+  return (
+    <div className='page-chat'>
+      <nav>
+        <Button
+          className='nav-button'
+          value='arrow_back'
+          goTo={'/im/' + id}
+        />
+        <div className="heading">
+          Edit Profile
         </div>
+        <button form='profile-form' className='nav-button'>
+          <Icon className='icon' fontSize='30px'>
+            done
+          </Icon>
+        </button>
+      </nav>
+      <div className='profile-form'>
+        
+        <ProfileInputForm userId={id}/>
       </div>
-    );
-  }
+    </div>
+  );
+
 }
 

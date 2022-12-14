@@ -1,25 +1,34 @@
-import React, {useState} from 'react';
-import {Link} from 'react-router-dom'
+import React, {useState, useEffect, useCallback, useRef} from 'react';
+import {Link, useParams} from 'react-router-dom'
 import './PageChat.scss';
 import {Message, Button} from '../../components';
 import barsiq from '../../images/barsiq.png';
-import billy from '../../images/billy.jpeg';
-import smesh from '../../images/смешнявкин.JPG';
+import {getTimeFromISOString} from '../'
 function Messages(props) {
   const messages = props.messages;
+  const messagesEndRef = useRef(null)
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages.length]);
   var messagesJSX = null
   if (messages !== null) {
     messagesJSX = messages.map((msg, index) =>
       <Message
         key={index}
-        isMine={msg.isMine}
-        text={msg.text}
-        time={msg.time}
+        text={msg.content}
+        time={getTimeFromISOString(msg.created_at)}
+        sender={msg.sender === 'guest' ? ' ' : msg.sender}
+        isMine={msg.sender === 'guest'}
       />)
   }
   return (
     <div className="messages">
       {messagesJSX}
+    <div ref={messagesEndRef} />
     </div>
   )
 }
@@ -32,21 +41,12 @@ function MessageInputForm(props) {
   }
   const handleSubmit = (event) => {
     event.preventDefault();
-    
     if(value !== '') {
-      const textString = value;
-      const timeString = getCurrentTime();
       const newMessage = {
-        isMine: true,
-        text: textString,
-        time: timeString,
+        content: value,
       }
-      let localStorageMessages = JSON.parse(localStorage.getItem('messages' + props.userId));
-      if(localStorageMessages === null) {
-          localStorageMessages = [];
-      }
-      localStorageMessages.push(newMessage)
-      localStorage.setItem('messages' + props.userId, JSON.stringify(localStorageMessages));
+      props.postMessage(newMessage);
+      props.pollCallback();
       setValue('');
       props.changeState()
     }
@@ -66,45 +66,74 @@ function MessageInputForm(props) {
   )
 }
 
-export class PageChat extends React.Component {
-  constructor(props) {
-    super(props);
-    let localStorageMessages = JSON.parse(localStorage.getItem("messages" + this.props.userId));
-    if(localStorageMessages === null) {
-      if (this.props.userId === '1') {
-        localStorageMessages = [{
-        isMine: false,
-        text: 'Я вазу уронил',
-        time: '00:01',
-        }];
-        localStorage.setItem('messages1', JSON.stringify(localStorageMessages));
-      } else if (this.props.userId === '2') {
-        localStorageMessages = [{
-        isMine: false,
-        text: 'Do you like what you see?',
-        time: '00:03',
-        }];
-        localStorage.setItem('messages2', JSON.stringify(localStorageMessages));
-      } else if (this.props.userId === '3') {
-        localStorageMessages = [{
-        isMine: false,
-        text: 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',
-        time: '00:04',
-        }];
-        localStorage.setItem('messages3', JSON.stringify(localStorageMessages));
-      }
-      
-    }
-    this.state ={
-      messages: localStorageMessages
-      }
-  };
-  changeState(props) {
-    this.setState({
-      messages: JSON.parse(localStorage.getItem("messages" + this.props.userId))
+export function PageChat () {
+  let { id } = useParams();
+  const [error, setError] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [chat, setChat] = useState({name: ''});
+  const [lastLogin, setLastLogin] = useState('');
+
+  useEffect(() => {
+    fetch('https://reatlaz.pythonanywhere.com/chats/' + id, {
+    mode: 'cors',
+    })
+    .then(resp => resp.json())
+    .then(chatInfo => {
+      console.log(chatInfo.data)
+      setChat(chatInfo.data.chat);
+      setLastLogin(chatInfo.data.last_login);
+    },
+    (error) => setError(error));
+  }, [id])
+
+  const postMessage = (data) => {
+    console.log(JSON.stringify(data));
+    fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        },
+      body: JSON.stringify(data),
       })
+      .then(resp => resp.json())
+      .then(data => {
+        pollCallback(); // get the newly sent message from server
+        console.log(data)
+      },
+      (error) => setError(error));
   }
-  render() {
+const pollCallback = useCallback(
+    () => { fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
+      mode: 'cors',
+      headers: {'Access-Control-Allow-Origin': '*'}
+      })
+      .then(resp => resp.json())
+      .then(newMessages => {
+        console.log(newMessages.data)
+        setMessages(newMessages.data);
+        localStorage.setItem('messages' + id, JSON.stringify(newMessages.data));
+      },
+      (error) => {
+            setError(error);
+          });
+    }, [id]);
+  useEffect( () => {
+    const localStorageMessages = JSON.parse(localStorage.getItem("messages" + id));
+    if (localStorageMessages != null) {
+      setMessages(localStorageMessages);
+    }
+    pollCallback();
+    const t = setInterval(() => pollCallback(), 10000);
+    return () => clearInterval(t)
+  }, [id, pollCallback]);
+  const changeState = (props) => {
+  setMessages(JSON.parse(localStorage.getItem("messages" + id)))
+  }
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  } else {
     return (
       <div className='page-chat'>
         <nav>
@@ -113,54 +142,60 @@ export class PageChat extends React.Component {
             value='arrow_back'
             goTo={'/im'}
           />
-          <Link className="chat-heading" to={'/user/' + this.props.userId}>
+          <Link className="chat-heading"
+          to={'/user/' + id}
+          >
             <img
-              src={
-                (this.props.userId === '1' && barsiq) ||
-                (this.props.userId === '2' && billy) ||
-                (this.props.userId === '3' && smesh)
-                }
+              src={barsiq}
               className="user-avatar"
               alt="Not found"
             />
             <div className="receiver-text">
               <div className="username">
-                {
-                  (this.props.userId === '1' && 'Барсик') ||
-                  (this.props.userId === '2' && 'Billy') ||
-                  (this.props.userId === '3' && 'Беседа классааааааааааааааааааааа')
-                }
+                {chat.name}
               </div>
-              <div className="last-seen">
-                был 2 часа назад
-              </div>
+              {chat.is_private && <div className="last-seen">{timeSince(lastLogin)}</div>}
             </div> 
           </Link>
           <Button className='nav-button' value='search'/>
           <Button className='nav-button' value='more_vert'/>
         </nav>
-        <Messages messages={this.state.messages}/>
+        <Messages messages={messages}/>
         <MessageInputForm
-          changeState={() => this.changeState()}
-          onSubmit={this.handleSubmit}
-          userId={this.props.userId}
+          changeState={changeState}
+          id={id}
+          postMessage={postMessage}
+          pollCallback={pollCallback}
         />
     </div>
     );
   }
 }
 
+function timeSince(isoString) {
+  const date = new Date(isoString);
+  var seconds = Math.floor((new Date() - date) / 1000);
 
-function getCurrentTime() {
-  const currentDate = new Date();
-    let hours = String(currentDate.getHours());
-    if (hours.length === 1) {
-        hours = '0' + hours
-    }
-    let minutes = String(currentDate.getMinutes());
+  var interval = seconds / 31536000;
 
-    if (minutes.length === 1) {
-        minutes = '0' + minutes
-    }
-    return hours + ":" + minutes;
+  if (interval > 1) {
+    return 'был(а) в сети ' + Math.floor(interval) + ' лет назад';
+  }
+  interval = seconds / 2592000;
+  if (interval > 1) {
+    return 'был(а) в сети ' + Math.floor(interval) + ' месяцев назад';
+  }
+  interval = seconds / 86400;
+  if (interval > 1) {
+    return 'был(а) в сети ' + Math.floor(interval) + ' дней назад';
+  }
+  interval = seconds / 3600;
+  if (interval > 1) {
+    return 'был(а) в сети ' + Math.floor(interval) + ' часов назад';
+  }
+  interval = seconds / 60;
+  if (interval > 1) {
+    return 'был(а) в сети ' + Math.floor(interval) + ' минут назад';
+  }
+  return 'был(а) в сети ' + Math.floor(seconds) + ' секунд назад';
 }
