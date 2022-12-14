@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {Link} from 'react-router-dom'
 import './PageChat.scss';
 import {Message, Button} from '../../components';
@@ -37,15 +37,8 @@ function MessageInputForm(props) {
         author: 'ReAtlaz',
         text: value,
       }
-      props.postData(newMessage);
-      props.pollItems();
-
-      let localStorageMessages = JSON.parse(localStorage.getItem('messagesGeneral'));
-      if(localStorageMessages === null) {
-          localStorageMessages = [];
-      }
-      localStorageMessages.push(newMessage)
-      localStorage.setItem('messagesGeneral', JSON.stringify(localStorageMessages));
+      props.postMessage(newMessage);
+      props.pollCallback();
       setValue('');
       props.changeState()
     }
@@ -68,24 +61,7 @@ function MessageInputForm(props) {
 export function PageGeneralChat () {
   const [error, setError] = useState(null);
   const [messages, setMessages] = useState([]);
-  // const [isLoaded, setIsLoaded] = useState(false);
-  const pollItems = () => { fetch('https://tt-front.vercel.app/messages/', {
-    mode: 'cors',
-    headers: {'Access-Control-Allow-Origin': '*'}
-    })
-    .then(resp => resp.json())
-    .then(data => {
-      // setIsLoaded(true);
-      setMessages(data);
-      // console.log(data)
-      localStorage.setItem('messagesGeneral', JSON.stringify(data));
-    },
-    (error) => {
-          // setIsLoaded(true);
-          setError(error);
-        });
-  }
-  const postData = (data) => {
+  const postMessage = (data) => {
     //console.log(JSON.stringify(data));
     fetch('https://tt-front.vercel.app/message/', {
       method: 'POST',
@@ -98,25 +74,35 @@ export function PageGeneralChat () {
       })
       .then(resp => resp.json())
       .then(data => {
-        // setIsLoaded(true);
-        //setMessages(data);
-        // console.log(data)
-        //localStorage.setItem('messagesGeneral', JSON.stringify(data));
+        pollCallback(); // get the newly sent message from server
+        console.log(data)
       },
-      (error) => {
-      // setIsLoaded(true);
-      setError(error);
-    });
+      (error) => setError(error));
   }
+  const pollCallback = useCallback(
+  () => { fetch('https://tt-front.vercel.app/messages/', {
+    mode: 'cors',
+    headers: {'Access-Control-Allow-Origin': '*'}
+    })
+    .then(resp => resp.json())
+    .then(data => {
+      console.log(data)
+      setMessages(data);
+      localStorage.setItem('messagesGeneral', JSON.stringify(data));
+    },
+  (error) => {
+        setError(error);
+      });
+  }, [])
   useEffect( () => {
     const localStorageMessages = JSON.parse(localStorage.getItem('messagesGeneral'));
     if (localStorageMessages != null) {
       setMessages(localStorageMessages);
     }
-    pollItems();
-    const t = setInterval(() => pollItems(), 10000);
+    pollCallback();
+    const t = setInterval(() => pollCallback(), 10000);
     return () => clearInterval(t)
-  }, []);
+  }, [pollCallback]);
   const changeState = (props) => {
   setMessages(JSON.parse(localStorage.getItem('messagesGeneral')))
   }
@@ -143,9 +129,7 @@ export function PageGeneralChat () {
             <div className="username">
                 Общий чат
             </div>
-            <div className="last-seen">
-
-            </div>
+            <div className="last-seen"></div>
           </div> 
         </Link>
         <Button className='nav-button' value='search'/>
@@ -154,14 +138,14 @@ export function PageGeneralChat () {
       <Messages messages={messages}/>
       <MessageInputForm
         changeState={changeState}
-        postData={postData}
-        pollItems={pollItems}
+
+        postMessage={postMessage}
+        pollCallback={pollCallback}
       />
   </div>
   );
   }
 }
-
 
 function getTimeFromISOString(timestamp) {
   return new Date(timestamp).toLocaleTimeString('ru',

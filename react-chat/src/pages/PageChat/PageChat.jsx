@@ -38,13 +38,6 @@ function MessageInputForm(props) {
       }
       props.postMessage(newMessage);
       props.pollCallback();
-      
-      let localStorageMessages = JSON.parse(localStorage.getItem('messages' + props.userId));
-      if(localStorageMessages === null) {
-          localStorageMessages = [];
-      }
-      localStorageMessages.push(newMessage)
-      localStorage.setItem('messages' + props.userId, JSON.stringify(localStorageMessages));
       setValue('');
       props.changeState()
     }
@@ -70,8 +63,6 @@ export function PageChat () {
   const [messages, setMessages] = useState([]);
   const [chat, setChat] = useState({name: ''});
   const [lastLogin, setLastLogin] = useState('');
-  // const [isLoaded, setIsLoaded] = useState(false);
-
 
   useEffect(() => {
     fetch('https://reatlaz.pythonanywhere.com/chats/' + id, {
@@ -110,11 +101,10 @@ export function PageChat () {
       headers: {'Access-Control-Allow-Origin': '*'}
       })
       .then(resp => resp.json())
-      .then(newChats => {
-        console.log(newChats.data)
-        setMessages(newChats.data);
-
-        localStorage.setItem('messages' + id, JSON.stringify(newChats.data));
+      .then(newMessages => {
+        console.log(newMessages.data)
+        setMessages(newMessages.data);
+        localStorage.setItem('messages' + id, JSON.stringify(newMessages.data));
       },
       (error) => {
             setError(error);
@@ -143,7 +133,9 @@ export function PageChat () {
             value='arrow_back'
             goTo={'/im'}
           />
-          <Link className="chat-heading" to={'/user/' + id}>
+          <Link className="chat-heading"
+          to={'/user/' + id}
+          >
             <img
               src={barsiq}
               className="user-avatar"
