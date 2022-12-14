@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {Link, useParams} from 'react-router-dom'
 import './PageChat.scss';
 import {Message, Button} from '../../components';
@@ -6,6 +6,14 @@ import barsiq from '../../images/barsiq.png';
 import {getTimeFromISOString} from '../'
 function Messages(props) {
   const messages = props.messages;
+  const messagesEndRef = useRef(null)
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages]);
   var messagesJSX = null
   if (messages !== null) {
     messagesJSX = messages.map((msg, index) =>
@@ -20,6 +28,7 @@ function Messages(props) {
   return (
     <div className="messages">
       {messagesJSX}
+    <div ref={messagesEndRef} />
     </div>
   )
 }
