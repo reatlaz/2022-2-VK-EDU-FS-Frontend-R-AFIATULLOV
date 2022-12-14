@@ -13,7 +13,7 @@ function Messages(props) {
 
   useEffect(() => {
     scrollToBottom()
-  }, [messages]);
+  }, [messages.length]);
   var messagesJSX = null
   if (messages !== null) {
     messagesJSX = messages.map((msg, index) =>
