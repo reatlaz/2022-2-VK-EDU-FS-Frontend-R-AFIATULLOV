@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 export function PageChatList () {
   const [error, setError] = useState(null);
   const [chats, setChats] = useState([]);
+  const [lastMessageGeneral, setLastMessageGeneral] = useState(null);
   //const API_URL = 'https://reatlaz.pythonanywhere.com/chats/'
   //const API_URL = '/chats/'
   
@@ -16,23 +17,21 @@ export function PageChatList () {
     if (localStorageChats != null) {
       setChats(localStorageChats);
     }
+    const localStorageLastMessageGeneral = JSON.parse(localStorage.getItem('lastMessageGeneral'));
+    if (localStorageLastMessageGeneral != null) {
+      setLastMessageGeneral(localStorageLastMessageGeneral);
+    }
     pollChats();
     const t = setInterval(() => pollChats(), 10000);
     return () => clearInterval(t)
   }, []);
   
-  const pollChats = () => { fetch('https://reatlaz.pythonanywhere.com/chats/', {
-    mode: 'cors',
+  const pollChats = () => {
+    fetch('https://reatlaz.pythonanywhere.com/chats/', {
+      mode: 'cors',
     })
     .then(resp => resp.json())
     .then(newChats => {
-      // setIsLoaded(true);
-
-      // let sorted_data = []
-      // if (data != null) {
-      //   sorted_data = data.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
-      // }
-      // setChats(newChats.data.sort((a, b) => a.timestamp.localeCompare(b.timestamp)));
       setChats(newChats.data);
       console.log(newChats.data)
       localStorage.setItem('chats', JSON.stringify(newChats.data));
@@ -41,6 +40,20 @@ export function PageChatList () {
           // setIsLoaded(true);
           setError(error);
         });
+
+    fetch('https://tt-front.vercel.app/messages/', {
+      mode: 'cors',
+      headers: {'Access-Control-Allow-Origin': '*'}
+    })
+    .then(resp => resp.json())
+    .then(data => {
+      const last = data.at(-1)
+      console.log(last);
+      setLastMessageGeneral(last);
+      localStorage.setItem('lastMessageGeneral', JSON.stringify(last));
+    }, (error) => {
+        setError(error);
+    });
   }
 
   let chatsJSX = null
@@ -90,12 +103,12 @@ export function PageChatList () {
                           Общий чат
                       </div>
                       <div className="last-message">
-                          Blank
+                          {lastMessageGeneral ? (lastMessageGeneral.author + ': ' + lastMessageGeneral.text) : 'Нет сообщений'}
                       </div>
                   </div>
                   <div className="delivered">
                       <div className="last-message-time">
-                          Blank
+                          {lastMessageGeneral && getTimeFromISOString(lastMessageGeneral.timestamp)}
                       </div>
                       <div className="material-icons read-icons">
                           done

@@ -95,7 +95,7 @@ export function PageChat () {
       },
       (error) => setError(error));
   }
-  const pollCallback = useCallback(
+const pollCallback = useCallback(
     () => { fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
       mode: 'cors',
       headers: {'Access-Control-Allow-Origin': '*'}
