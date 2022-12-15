@@ -101,6 +101,7 @@ export function PageChatList () {
             <Button value='search' className="nav-button"/>
         </nav>
         <div className="chats">
+        <div ref={chatsStartRef} />
         <Link className="chat" to="/im/general">
               <img src={vkfs} className="chat-picture" alt="Not found"/>
               <div className="chat-info">
@@ -122,7 +123,6 @@ export function PageChatList () {
                   </div>
               </div>
           </Link>
-          <div ref={chatsStartRef} />
           {chatsJSX}
           <Button value='edit' className='create-chat'/>
         </div>
