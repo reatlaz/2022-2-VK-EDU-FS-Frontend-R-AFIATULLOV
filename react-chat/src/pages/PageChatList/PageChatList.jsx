@@ -121,7 +121,6 @@ export function PageChatList () {
                   </div>
               </div>
           </Link>
-          <div ref={chatsStartRef} />
           {chatsJSX}
           <Button value='edit' className='create-chat'/>
         </div>
