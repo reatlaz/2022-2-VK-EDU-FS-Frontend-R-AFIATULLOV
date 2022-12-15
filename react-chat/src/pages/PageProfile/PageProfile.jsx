@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useDebugValue, useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom'
 import { Icon } from '@mui/material';
 import './PageProfile.scss';
@@ -117,7 +117,9 @@ function ProfileInputForm(props) {
 
 export function PageProfile(){
   let { id } = useParams();
-
+  useEffect( () => {
+    window.scrollTo(0, 0);
+  }, [])
   return (
     <div className='page-chat'>
       <nav>

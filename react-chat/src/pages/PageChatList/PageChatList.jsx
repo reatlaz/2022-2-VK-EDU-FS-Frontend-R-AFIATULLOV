@@ -12,12 +12,9 @@ export function PageChatList () {
   
   //const API_URL = 'https://reatlaz.pythonanywhere.com/chats/'
   //const API_URL = '/chats/'
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
   
   useEffect( () => {
+    window.scrollTo(0, 0);
     const localStorageChats = JSON.parse(localStorage.getItem('chats'));
     if (localStorageChats != null) {
       setChats(localStorageChats);
