@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import './PageChatList.scss';
 import {Button} from '../../components';
 import vkfs from '../../images/vkfs.jpg';
@@ -9,9 +9,15 @@ export function PageChatList () {
   const [error, setError] = useState(null);
   const [chats, setChats] = useState([]);
   const [lastMessageGeneral, setLastMessageGeneral] = useState(null);
+  const chatsStartRef = useRef(null)
+  const scrollToTop = () => {
+    chatsStartRef.current?.scrollIntoView({ behavior: "auto" })
+  }
   //const API_URL = 'https://reatlaz.pythonanywhere.com/chats/'
   //const API_URL = '/chats/'
-  
+  useEffect(() => {
+    scrollToTop()
+  }, []);
   useEffect( () => {
     const localStorageChats = JSON.parse(localStorage.getItem('chats'));
     if (localStorageChats != null) {
@@ -110,14 +116,15 @@ export function PageChatList () {
                       <div className="last-message-time">
                           {lastMessageGeneral && getTimeFromISOString(lastMessageGeneral.timestamp)}
                       </div>
-                      <div className="material-icons read-icons">
-                          done
+                      <div className='material-icons read-icons'>
+                          done_all
                       </div>
                   </div>
               </div>
           </Link>
+          <div ref={chatsStartRef} />
           {chatsJSX}
-          <Button value='edit' className="create-chat"/>
+          <Button value='edit' className='create-chat'/>
         </div>
       </div>
     );

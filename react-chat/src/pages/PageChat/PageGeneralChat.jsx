@@ -138,7 +138,7 @@ export function PageGeneralChat () {
             <div className="username">
                 Общий чат
             </div>
-            <div className="last-seen"></div>
+            {/* <div className="last-seen"></div> */}
           </div> 
         </Link>
         <Button className='nav-button' value='search'/>

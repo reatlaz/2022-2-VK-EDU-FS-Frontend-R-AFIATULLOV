@@ -54,10 +54,10 @@ input::placeholder  {
 }
 
 .chat-heading {
-  width: 60%;
+  width: calc(100% - 180px);
   text-decoration: none;
   color: inherit;
-  font-size: 30px;
+  font-size: 20px;
   display: flex;
   flex-direction: row;
   flex-grow: 1;
@@ -90,14 +90,14 @@ input::placeholder  {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 22px;
+  font-size: 18px;
   margin: 3px 10px;
 }
 .last-seen {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 15px;
+  font-size: 14px;
   opacity: 60%;
   padding: 0;
   margin: 3px 10px;

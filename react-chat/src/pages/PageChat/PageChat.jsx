@@ -179,23 +179,23 @@ function timeSince(isoString) {
   var interval = seconds / 31536000;
 
   if (interval > 1) {
-    return 'был(а) в сети ' + Math.floor(interval) + ' лет назад';
+    return 'был(а) ' + Math.floor(interval) + ' лет назад';
   }
   interval = seconds / 2592000;
   if (interval > 1) {
-    return 'был(а) в сети ' + Math.floor(interval) + ' месяцев назад';
+    return 'был(а) ' + Math.floor(interval) + ' месяцев назад';
   }
   interval = seconds / 86400;
   if (interval > 1) {
-    return 'был(а) в сети ' + Math.floor(interval) + ' дней назад';
+    return 'был(а) ' + Math.floor(interval) + ' дней назад';
   }
   interval = seconds / 3600;
   if (interval > 1) {
-    return 'был(а) в сети ' + Math.floor(interval) + ' часов назад';
+    return 'был(а) ' + Math.floor(interval) + ' часов назад';
   }
   interval = seconds / 60;
   if (interval > 1) {
-    return 'был(а) в сети ' + Math.floor(interval) + ' минут назад';
+    return 'был(а) ' + Math.floor(interval) + ' минут назад';
   }
-  return 'был(а) в сети ' + Math.floor(seconds) + ' секунд назад';
+  return 'был(а) ' + Math.floor(seconds) + ' секунд назад';
 }
