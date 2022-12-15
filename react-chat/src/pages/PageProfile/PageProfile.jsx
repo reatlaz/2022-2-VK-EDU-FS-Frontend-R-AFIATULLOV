@@ -1,4 +1,4 @@
-import React, {useDebugValue, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom'
 import { Icon } from '@mui/material';
 import './PageProfile.scss';
