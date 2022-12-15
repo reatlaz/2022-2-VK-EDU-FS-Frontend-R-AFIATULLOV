@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import './PageChatList.scss';
 import {Button} from '../../components';
 import vkfs from '../../images/vkfs.jpg';
@@ -9,15 +9,14 @@ export function PageChatList () {
   const [error, setError] = useState(null);
   const [chats, setChats] = useState([]);
   const [lastMessageGeneral, setLastMessageGeneral] = useState(null);
-  const chatsStartRef = useRef(null)
-  const scrollToTop = () => {
-    chatsStartRef.current?.scrollIntoView({ behavior: "auto" })
-  }
+  
   //const API_URL = 'https://reatlaz.pythonanywhere.com/chats/'
   //const API_URL = '/chats/'
+
   useEffect(() => {
-    scrollToTop()
-  }, []);
+    window.scrollTo(0, 0)
+  }, [])
+  
   useEffect( () => {
     const localStorageChats = JSON.parse(localStorage.getItem('chats'));
     if (localStorageChats != null) {
@@ -101,7 +100,6 @@ export function PageChatList () {
             <Button value='search' className="nav-button"/>
         </nav>
         <div className="chats">
-        <div ref={chatsStartRef} />
         <Link className="chat" to="/im/general">
               <img src={vkfs} className="chat-picture" alt="Not found"/>
               <div className="chat-info">
@@ -123,6 +121,7 @@ export function PageChatList () {
                   </div>
               </div>
           </Link>
+          <div ref={chatsStartRef} />
           {chatsJSX}
           <Button value='edit' className='create-chat'/>
         </div>
