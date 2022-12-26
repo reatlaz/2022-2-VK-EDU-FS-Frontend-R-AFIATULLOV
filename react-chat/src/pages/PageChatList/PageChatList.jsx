@@ -26,21 +26,22 @@ export function PageChatList () {
     pollChats();
     const t = setInterval(() => pollChats(), 10000);
     return () => clearInterval(t);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   async function notify(newChats) {
     const permission = await Notification.requestPermission();
     console.log('newChats', newChats)
     console.log('chats', chats)
-    // if (permission === 'granted') {}
-    for(let i = 0; i < chats.length; i++) {
+    if (permission === 'granted') {
+      for(let i = 0; i < chats.length; i++) {
+        if (newChats[i] !== chats[i]) {
+          console.log('creating notofication')
+          /*const notifiaction = */new Notification(newChats[i].last_message.sender, { body: newChats[i].last_message.content,
 
-      if (newChats[i] !== chats[i]) {
-        console.log('creating notofication')
-        const notifiaction = new Notification(newChats[i].last_message.sender, { body: newChats[i].last_message.content,
-
-        });
+          });
+        }
       }
     }
+
   }
   const pollChats = () => {
     fetch('https://reatlaz.pythonanywhere.com/chats/', {
