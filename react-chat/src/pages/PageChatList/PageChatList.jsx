@@ -25,18 +25,35 @@ export function PageChatList () {
     }
     pollChats();
     const t = setInterval(() => pollChats(), 10000);
-    return () => clearInterval(t)
+    return () => clearInterval(t);
   }, []);
-  
+  async function notify(newChats) {
+    const permission = await Notification.requestPermission();
+    console.log('newChats', newChats)
+    console.log('chats', chats)
+    // if (permission === 'granted') {}
+    for(let i = 0; i < chats.length; i++) {
+
+      if (newChats[i] !== chats[i]) {
+        console.log('creating notofication')
+        const notifiaction = new Notification(newChats[i].last_message.sender, { body: newChats[i].last_message.content,
+
+        });
+      }
+    }
+  }
   const pollChats = () => {
     fetch('https://reatlaz.pythonanywhere.com/chats/', {
       mode: 'cors',
     })
     .then(resp => resp.json())
     .then(newChats => {
-      setChats(newChats.data);
-      console.log(newChats.data)
-      localStorage.setItem('chats', JSON.stringify(newChats.data));
+      const data = newChats.data
+      if(data !== chats) {
+        notify(data);
+      }
+      setChats(data);
+      localStorage.setItem('chats', JSON.stringify(data));
     },
     (error) => {
           // setIsLoaded(true);
@@ -50,7 +67,6 @@ export function PageChatList () {
     .then(resp => resp.json())
     .then(data => {
       const last = data.at(-1)
-      console.log(last);
       setLastMessageGeneral(last);
       localStorage.setItem('lastMessageGeneral', JSON.stringify(last));
     }, (error) => {

@@ -32,14 +32,22 @@
   color: grey;
   background-color: transparent;
   border: 0;
-  margin: 10px;
+  margin: 10px 5px;
   padding: 5px;
   text-decoration: none;
-  transition: background-color 0.5s;
+  transition: background-color 0.25s;
   border-radius: 50%;
+}
+
+.attach-file-button {
   transform: rotate(90deg);
+  cursor: pointer;
 }
 
 .attach-button:hover {
-  background-color: #b6b6b6;
+  background-color: #d1d1d1;
+}
+
+.attach-button:active {
+  opacity: 0.66;
 }

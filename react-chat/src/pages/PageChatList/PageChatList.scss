@@ -136,13 +136,13 @@ body>div>a {
 }
 .create-chat:hover {
     box-shadow: 0 0 0 0;
-    animation: pulse 2s infinite;
+//    animation: create-chat-pulse 2s infinite;
 }
 .create-chat:active {
     color: #333333;
     background-color: rgb(97, 79, 27);
 }
-@keyframes pulse {
+@keyframes create-chat-pulse {
     0% {
         box-shadow: 0 0 0 0 rgba(204,169,44, 0.4);
     }
@@ -165,7 +165,7 @@ body>div>a {
 }
 
 .unread-pinged{
-    animation: pulse 2s infinite;
+    animation: create-chat-pulse 2s infinite;
     margin-top: 5px;
     font-size: 15px;
     padding: 3px 5px;

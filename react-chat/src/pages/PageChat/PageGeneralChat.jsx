@@ -7,12 +7,9 @@ import vkfs from '../../images/vkfs.jpg';
 function Messages(props) {
   const messages = props.messages;
   const messagesEndRef = useRef(null)
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "auto" })
-  }
 
   useEffect(() => {
-    scrollToBottom()
+    window.scrollTo(0, document.body.scrollHeight);
   }, [messages.length]);
   var messagesJSX = null
   if (messages !== null) {
@@ -26,8 +23,8 @@ function Messages(props) {
       />)
   }
   return (
-    <div className="messages">
-      {messagesJSX}
+    <div id="messages">
+      {messagesJSX.reverse()}
     <div ref={messagesEndRef} />
     </div>
   )
@@ -52,6 +49,20 @@ function MessageInputForm(props) {
       props.changeState()
     }
   }
+    const sendLocation = () => {
+    console.log('trying to send location');
+    navigator.geolocation.getCurrentPosition((position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      const newMessage = {
+        author: 'ReAtlaz',
+        text: `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`,
+      }
+      props.postMessage(newMessage);
+      props.pollCallback();
+    });
+    console.log('location sent');
+  }
 
   return(
     <form className="form" onSubmit={handleSubmit}>
@@ -61,7 +72,21 @@ function MessageInputForm(props) {
           onChange={handleChange}
           value={value}
         />
-        <Button value='attach_file' className='attach-button'/>
+        <Button
+          value='location_on'
+          className='attach-button'
+          onClick={sendLocation}
+        />
+        <Button
+          value='attach_file'
+          className='attach-file-button attach-button'
+          // onClick={}
+        />
+        <Button
+          value='mic'
+          className='attach-button'
+          // onClick={}
+        />
       </div>
     </form>
   )

@@ -8,6 +8,7 @@ export function Button(props) {
     <Link
       className={props.className}
       to={props.goTo}
+      onClick={props.onClick}
     >
       <Icon className='icon' fontSize='30px'>
         {props.value}
