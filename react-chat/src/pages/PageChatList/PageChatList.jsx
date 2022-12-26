@@ -1,16 +1,17 @@
 import React, {useState, useEffect, useRef} from 'react';
+import {Link, useParams} from 'react-router-dom'
 import './PageChatList.scss';
 import {Button} from '../../components';
 import vkfs from '../../images/vkfs.jpg';
 import barsiq from '../../images/barsiq.png';
 import notificationIcon from '../../images/notificationIcon.png';
-import { Link } from 'react-router-dom';
 
 export function PageChatList () {
 //  const [error, setError] = useState(null);
   const [chats, setChats] = useState([]);
   //const [polled, setPolled] = useState(false);
   const [lastMessageGeneral, setLastMessageGeneral] = useState(null);
+  let { id } = useParams();
   
   //const API_URL = 'https://reatlaz.pythonanywhere.com/chats/'
   //const API_URL = '/chats/'
@@ -39,24 +40,26 @@ export function PageChatList () {
     const cur = chats
     const prev = prevChats.current
     for (let i = 0, j = 0; i < prev.length; i++, j++){
-      console.log(prev[j].last_message.id, cur[i].last_message.id)
+      console.log(prev[j], cur[i])
+      console.log(prev[j].last_message.id, cur[i].last_message.id, Number(id))
       console.log(prev[j].last_message.id === cur[i].last_message.id)
-      if (prev[j].last_message.id !== cur[i].last_message.id) {
+      if (prev[j].last_message.id !== cur[i].last_message.id && Number(id) !== cur[i].id) {
         notifyUser('Новое сообщение: ' + cur[i].name, {body: cur[i].last_message.sender + ': ' + cur[i].last_message.content, icon: notificationIcon});
         i++;
       }
     }
     prevChats.current = chats;
-  }, [chats])
+  }, [chats, id])
 
   useEffect(() => {
     const cur = lastMessageGeneral
     const prev = prevLastMessageGeneral.current
-    if (prev && prev._id !== cur._id) {
+
+    if (prev && prev._id !== cur._id && id !== undefined) {
       notifyUser('Новое сообщение: Общий чат', {body: cur.author + ': ' + cur.text, icon: notificationIcon});
     }
     prevLastMessageGeneral.current = lastMessageGeneral;
-  }, [lastMessageGeneral])
+  }, [lastMessageGeneral, id])
 
 
   function notifyUser(sender, content) {
