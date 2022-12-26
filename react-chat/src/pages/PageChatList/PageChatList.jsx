@@ -43,7 +43,7 @@ export function PageChatList () {
       console.log(prev[j], cur[i])
       console.log(prev[j].last_message.id, cur[i].last_message.id, Number(id))
       console.log(prev[j].last_message.id === cur[i].last_message.id)
-      if (prev[j].last_message.id !== cur[i].last_message.id && Number(id) !== cur[i].id) {
+      if (prev[j].last_message.id < cur[i].last_message.id && Number(id) !== cur[i].id) {
         notifyUser('Новое сообщение: ' + cur[i].name, {body: cur[i].last_message.sender + ': ' + cur[i].last_message.content, icon: notificationIcon});
         i++;
       }
