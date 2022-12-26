@@ -269,7 +269,7 @@ export function PageChat () {
   //import for notifications support
   PageChatList();
   let { id } = useParams();
-  const [error, setError] = useState(null);
+  //const [error, setError] = useState(null);
   const [messages, setMessages] = useState([]);
   const [chat, setChat] = useState({name: ''});
   const [lastLogin, setLastLogin] = useState('');
@@ -285,8 +285,8 @@ export function PageChat () {
       setChat(chatInfo.data.chat);
       setLastLogin(chatInfo.data.last_login);
       
-    },
-    (error) => setError(error));
+    }/*,
+    (error) => setError(error)*/);
   }, [id])
 
   const postMessage = (data) => {
@@ -304,8 +304,8 @@ export function PageChat () {
       .then(data => {
         pollCallback(); // get the newly sent message from server
         console.log(data)
-      },
-      (error) => setError(error));
+      }/*,
+      (error) => setError(error)*/);
   }
 const pollCallback = useCallback(
     () => { fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
@@ -317,10 +317,7 @@ const pollCallback = useCallback(
         console.log(newMessages.data)
         setMessages(newMessages.data);
         localStorage.setItem('messages' + id, JSON.stringify(newMessages.data));
-      },
-      (error) => {
-            setError(error);
-          });
+      }/*,(error) => {setError(error)}*/);
     }, [id]);
   useEffect( () => {
     const localStorageMessages = JSON.parse(localStorage.getItem("messages" + id));
@@ -339,9 +336,9 @@ const pollCallback = useCallback(
   const changeState = (props) => {
   setMessages(JSON.parse(localStorage.getItem("messages" + id)))
   }
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  } else {
+  // if (error) {
+  //   return <div>Error: {error.message}</div>;
+  // } else {
     return (
       <div className='page-chat'>
         <nav>
@@ -378,7 +375,7 @@ const pollCallback = useCallback(
     </div>
     );
   }
-}
+//}
 
 function timeSince(isoString) {
   const date = new Date(isoString);

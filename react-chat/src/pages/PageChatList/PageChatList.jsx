@@ -7,7 +7,7 @@ import notificationIcon from '../../images/notificationIcon.png';
 import { Link } from 'react-router-dom';
 
 export function PageChatList () {
-  const [error, setError] = useState(null);
+//  const [error, setError] = useState(null);
   const [chats, setChats] = useState([]);
   //const [polled, setPolled] = useState(false);
   const [lastMessageGeneral, setLastMessageGeneral] = useState(null);
@@ -84,11 +84,10 @@ export function PageChatList () {
       setChats(data);
 
       localStorage.setItem('chats', JSON.stringify(data));
-    },
+    }/*,
     (error) => {
-          // setIsLoaded(true);
           setError(error);
-        });
+        }*/);
 
     fetch('https://tt-front.vercel.app/messages/', {
       mode: 'cors',
@@ -101,9 +100,9 @@ export function PageChatList () {
       setLastMessageGeneral(last);
 
       localStorage.setItem('lastMessageGeneral', JSON.stringify(last));
-    }, (error) => {
+    }/*, (error) => {
         setError(error);
-    });
+    }*/);
   }
 
   let chatsJSX = null
@@ -132,9 +131,9 @@ export function PageChatList () {
       </Link>
     )
   }
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  } else {
+  // if (error) {
+  //   return <div>Error: {error.message}</div>;
+  // } else {
     return (
       <div className='page-chat-list'>
         <nav>
@@ -172,7 +171,7 @@ export function PageChatList () {
       </div>
     );
   }
-}
+//}
 
 export function getTimeFromISOString(timestamp) {
   return new Date(timestamp).toLocaleTimeString('ru',
