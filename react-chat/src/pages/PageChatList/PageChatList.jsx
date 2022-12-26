@@ -109,28 +109,28 @@ export function PageChatList () {
   let chatsJSX = null
   if (chats !== null) {
     chatsJSX = chats.map((chat, index) =>
-    <Link className="chat" to={"/im/" + chat.id} key={index}>
-            <img src={barsiq} className="chat-picture" alt="Not found"/>
-            <div className="chat-info">
-                <div className="chat-text-info" >
-                    <div className="chat-name">
-                        {chat.name}
-                    </div>
-                    <div className="last-message">
-                        {chat.last_message ? (chat.last_message.sender + ': ' + chat.last_message.content) : 'Нет сообщений'}
-                    </div>
-                </div>
-                <div className="delivered">
-                    <div className="last-message-time">
-                        {chat.last_message && getTimeFromISOString(chat.last_message.created_at)}
-                    </div>
-                    <div className="material-icons read-icons">
-                        {chat.last_message && chat.last_message.is_read ? 'done_all' : 'done'}
-                    </div>
-                </div>
-            </div>
-        </Link>
-)
+      <Link className="chat" to={"/im/" + chat.id} key={index}>
+          <img src={barsiq} className="chat-picture" alt="Not found"/>
+          <div className="chat-info">
+              <div className="chat-text-info" >
+                  <div className="chat-name">
+                      {chat.name}
+                  </div>
+                  <div className="last-message">
+                      {chat.last_message ? (chat.last_message.sender + ': ' + chat.last_message.content) : 'Нет сообщений'}
+                  </div>
+              </div>
+              <div className="delivered">
+                  <div className="last-message-time">
+                      {chat.last_message && getTimeFromISOString(chat.last_message.created_at)}
+                  </div>
+                  <div className="material-icons read-icons">
+                      {chat.last_message && chat.last_message.is_read ? 'done_all' : 'done'}
+                  </div>
+              </div>
+          </div>
+      </Link>
+    )
   }
   if (error) {
     return <div>Error: {error.message}</div>;

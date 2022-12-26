@@ -5,6 +5,7 @@ import './PageChat.scss';
 import {Message, Button} from '../../components';
 import barsiq from '../../images/barsiq.png';
 import {getTimeFromISOString} from '../'
+import {PageChatList} from '..'
 
 function Messages(props) {
   const messages = props.messages;
@@ -41,7 +42,7 @@ function MessageInputForm(props) {
   const [imageURL, setImageURL] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
-  const [quickSent, setQuickSent] = useState(false);
+  const [vmIsQuick, setVmIsQuick] = useState(false);
   const [isOver, setIsOver] = useState(false);
   
   async function requestRecorder() {
@@ -70,6 +71,14 @@ function MessageInputForm(props) {
     mediaRecorder.addEventListener("dataavailable", handleData);
     return () => mediaRecorder.removeEventListener("dataavailable", handleData);
   }, [mediaRecorder, isRecording]);
+
+  useEffect(() => {
+    console.log(audioBlob)
+    if (audioBlob && vmIsQuick) {
+      handleVoiceMessage();
+    }
+
+  }, [audioBlob, vmIsQuick]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const inputElement = document.getElementById('file-input');
@@ -140,14 +149,14 @@ function MessageInputForm(props) {
       console.log(responseJson)
       const audioSrc = responseJson.audioSrc;
       const newMessage = {
-        content: quickSent ? '' : text,
+        content: vmIsQuick ? '' : text,
         audio: audioSrc
       }
       console.log('new message', newMessage)
       props.postMessage(newMessage);
       props.pollCallback();
-      if (quickSent){
-        setQuickSent(false);
+      if (vmIsQuick){
+        setVmIsQuick(false);
       } else {
         setText('');
       }
@@ -199,11 +208,11 @@ function MessageInputForm(props) {
   })
 
   const quickSendVM = () => {
-    setQuickSent(true);
+    setVmIsQuick(true);
     setIsRecording(false);
   }
 
-  const cancelVM = () => {
+  const stopRecording = () => {
     setIsRecording(false);
     setAudioURL('');
     setImageURL('');
@@ -211,7 +220,7 @@ function MessageInputForm(props) {
   return(
     <form className="form" onSubmit={handleSubmit}>
       {
-        (imageURL || audioURL) && <div className="attachments">
+        (imageURL || audioURL) && !vmIsQuick && <div className="attachments">
           {imageURL && <img className="attachment-preview" src={imageURL} alt="img attachment preview" />}
           {audioURL && <audio className="attachment-preview" src={audioURL} alt="audio attachment preview" controls/>}
           <Button
@@ -249,7 +258,7 @@ function MessageInputForm(props) {
         <Button
           value={isRecording ? 'stop' :'mic'}
           className='attach-button'
-          onClick={isRecording ? cancelVM : startRecording}
+          onClick={isRecording ? stopRecording : startRecording}
         />
       </div>
     </form>
@@ -257,6 +266,8 @@ function MessageInputForm(props) {
 }
 
 export function PageChat () {
+  //import for notifications support
+  PageChatList();
   let { id } = useParams();
   const [error, setError] = useState(null);
   const [messages, setMessages] = useState([]);
