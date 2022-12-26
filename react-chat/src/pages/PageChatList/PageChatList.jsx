@@ -3,6 +3,7 @@ import './PageChatList.scss';
 import {Button} from '../../components';
 import vkfs from '../../images/vkfs.jpg';
 import barsiq from '../../images/barsiq.png';
+import notificationIcon from '../../images/notificationIcon.png';
 import { Link } from 'react-router-dom';
 
 export function PageChatList () {
@@ -15,9 +16,11 @@ export function PageChatList () {
   //const API_URL = '/chats/'
   
   const prevChats = useRef();
+  const prevLastMessageGeneral = useRef();
 
   useEffect( () => {
     prevChats.current = chats;
+    prevLastMessageGeneral.current = lastMessageGeneral;
     window.scrollTo(0, 0);
     const localStorageChats = JSON.parse(localStorage.getItem('chats'));
     if (localStorageChats != null) {
@@ -32,8 +35,6 @@ export function PageChatList () {
     return () => clearInterval(t);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  
-  
   useEffect(() => {
     const cur = chats
     const prev = prevChats.current
@@ -41,27 +42,32 @@ export function PageChatList () {
       console.log(prev[j].last_message.id, cur[i].last_message.id)
       console.log(prev[j].last_message.id === cur[i].last_message.id)
       if (prev[j].last_message.id !== cur[i].last_message.id) {
-        notifyUser('Новое сообщение', {body: cur[i].last_message.sender + ': ' + cur[i].last_message.content, icon: '../../images/message.png'});
-        
+        notifyUser('Новое сообщение: ' + cur[i].name, {body: cur[i].last_message.sender + ': ' + cur[i].last_message.content, icon: notificationIcon});
         i++;
       }
-    
     }
     prevChats.current = chats;
   }, [chats])
+
+  useEffect(() => {
+    const cur = lastMessageGeneral
+    const prev = prevLastMessageGeneral.current
+    if (prev && prev._id !== cur._id) {
+      notifyUser('Новое сообщение: Общий чат', {body: cur.author + ': ' + cur.text, icon: notificationIcon});
+    }
+    prevLastMessageGeneral.current = lastMessageGeneral;
+  }, [lastMessageGeneral])
+
 
   function notifyUser(sender, content) {
     if (!('Notification' in window)) {
       alert('Browser does not support notifications');
     } else if (Notification.permission === 'granted') {
       new Notification(sender, content);
-      // console.log('notification sent');
-      //const notification = new Notification(chats.cur[i].last_message.sender, {body: chats.cur[i].last_message.content});
     } else if (Notification.permission !== 'denied') {
       Notification.requestPermission().then((permission) => {
         if (permission === 'granted') {
           new Notification(sender, content);
-          // console.log('notification sent');
         }
       })
     }
@@ -91,7 +97,9 @@ export function PageChatList () {
     .then(resp => resp.json())
     .then(data => {
       const last = data.at(-1)
+      console.log('adding polled data to general chat state', last)
       setLastMessageGeneral(last);
+
       localStorage.setItem('lastMessageGeneral', JSON.stringify(last));
     }, (error) => {
         setError(error);

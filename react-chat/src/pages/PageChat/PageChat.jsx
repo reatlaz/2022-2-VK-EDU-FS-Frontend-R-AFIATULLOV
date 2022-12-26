@@ -5,6 +5,7 @@ import './PageChat.scss';
 import {Message, Button} from '../../components';
 import barsiq from '../../images/barsiq.png';
 import {getTimeFromISOString} from '../'
+
 function Messages(props) {
   const messages = props.messages;
   const messagesEndRef = useRef(null)
@@ -28,7 +29,6 @@ function Messages(props) {
   return (
     <div id="messages">
       {messagesJSX.reverse()}
-
     <div ref={messagesEndRef} />
     </div>
   )
@@ -91,7 +91,7 @@ function MessageInputForm(props) {
       props.postMessage(newMessage);
       props.pollCallback();
       setText('');
-      props.changeState()
+      props.changeState();
       setImageURL('');
     }
   }
@@ -155,7 +155,6 @@ function MessageInputForm(props) {
       props.changeState()
     })
   }
-
   const dropHandler = (event) => {
     event.preventDefault();
     console.log('File(s) dropped');
@@ -181,7 +180,6 @@ function MessageInputForm(props) {
       setAudioURL('');
     }
   }
-
   const sendLocation = () => {
     console.log('trying to send location');
     navigator.geolocation.getCurrentPosition((position) => {
@@ -239,7 +237,6 @@ function MessageInputForm(props) {
           className='attach-button'
           onClick={sendLocation}
         />
-
         <label
           htmlFor="file-input"
           className='attach-file-button attach-button'
@@ -249,7 +246,6 @@ function MessageInputForm(props) {
           </Icon>
         </label>
         <input type="file" onChange={onImageChange}  accept='image/*' id='file-input' hidden/>
-
         <Button
           value={isRecording ? 'stop' :'mic'}
           className='attach-button'
@@ -300,7 +296,6 @@ export function PageChat () {
       },
       (error) => setError(error));
   }
-  
 const pollCallback = useCallback(
     () => { fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
       mode: 'cors',

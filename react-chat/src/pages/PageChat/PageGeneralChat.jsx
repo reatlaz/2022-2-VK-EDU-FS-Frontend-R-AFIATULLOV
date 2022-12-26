@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {Link} from 'react-router-dom'
+import { Icon } from '@mui/material';
 import './PageChat.scss';
 import {Message, Button} from '../../components';
 import vkfs from '../../images/vkfs.jpg';
@@ -17,6 +18,8 @@ function Messages(props) {
       <Message
         key={index}
         text={msg.text}
+        image={msg.image}
+        audio={msg.audio}
         time={getTimeFromISOString(msg.timestamp)}
         sender={msg.author === 'ReAtlaz' ? '' : msg.author}
         isMine={msg.author === 'ReAtlaz'}
@@ -31,22 +34,150 @@ function Messages(props) {
 }
 
 function MessageInputForm(props) {
-  const [value, setValue] = useState('');
+  const [text, setText] = useState('');
+  const [audioBlob, setAudioBlob] = useState();
+  const [audioURL, setAudioURL] = useState('');
+  const [imageURL, setImageURL] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [quickSent, setQuickSent] = useState(false);
+  const [isOver, setIsOver] = useState(false);
 
+  async function requestRecorder() {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    return new MediaRecorder(stream);
+  }
+  useEffect(() => {
+    if (mediaRecorder === null) {
+      if (isRecording) {
+        requestRecorder().then(setMediaRecorder, console.error);
+      }
+      return;
+    }
+
+    if (isRecording) {
+      mediaRecorder.start();
+    } else {
+      mediaRecorder.stop();
+    }
+
+    const handleData = event => {
+      setAudioBlob(event.data);
+      setAudioURL(URL.createObjectURL(event.data));
+    };
+
+    mediaRecorder.addEventListener("dataavailable", handleData);
+    return () => mediaRecorder.removeEventListener("dataavailable", handleData);
+  }, [mediaRecorder, isRecording]);
+
+  useEffect(() => {
+    const inputElement = document.getElementById('file-input');
+    inputElement.addEventListener("change", onImageChange, false);
+  }, [])
   const handleChange = (event) => {
-    setValue(event.target.value);
+    setText(event.target.value);
   }
   const handleSubmit = (event) => {
     event.preventDefault();
-    if(value !== '') {
+    if (imageURL !== '') {
+      handleFiles();
+    } else if (audioURL !== '') {
+      handleVoiceMessage();
+    } else if (text !== '') {
       const newMessage = {
         author: 'ReAtlaz',
-        text: value,
+        text: text,
       }
       props.postMessage(newMessage);
       props.pollCallback();
-      setValue('');
+      setText('');
+      props.changeState();
+      setImageURL('');
+    }
+  }
+  function handleFiles() {
+    const formData = new FormData();
+    const fileField = document.getElementById('file-input');
+    formData.append('image', fileField.files[0]);
+    let imgSrc = null;
+    fetch('https://tt-front.vercel.app/upload/', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+      body: formData,
+    })
+    .then(resp => resp.json())
+    .then(responseJson => {
+      console.log(responseJson.imgSrc)
+      imgSrc = responseJson.imgSrc;
+      const newMessage = {
+        author: 'ReAtlaz',
+        text: imgSrc
+      }
+      props.postMessage(newMessage);
+      props.pollCallback();
+      setText('');
       props.changeState()
+      setImageURL('');
+    })
+  }
+
+  const handleVoiceMessage = () => {
+    const formData = new FormData();
+    formData.append('audio', audioBlob);
+    fetch('https://tt-front.vercel.app/upload/', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+      body: formData,
+    })
+    .then(resp => resp.json())
+    .then(responseJson => {
+      console.log(responseJson)
+      const audioSrc = responseJson.audioSrc;
+      const newMessage = {
+        author: 'ReAtlaz',
+        text: audioSrc
+      }
+      console.log('new message', newMessage)
+      props.postMessage(newMessage);
+      props.pollCallback();
+      if (quickSent){
+        setQuickSent(false);
+      } else {
+        setText('');
+      }
+      setAudioURL('');
+      props.changeState()
+    })
+  }
+  const dropHandler = (event) => {
+    event.preventDefault();
+    console.log('File(s) dropped');
+    const inputElement = document.getElementById('file-input');
+    inputElement.files = event.dataTransfer.files;
+    setImageURL(URL.createObjectURL(event.dataTransfer.files[0]));
+    setAudioURL('');
+    setIsOver(false);
+  }
+    const dragOverHandler = (event) => {
+    event.preventDefault();
+    setIsOver(true);
+  }
+  const dragLeaveHandler = (event) => {
+    event.preventDefault();
+    setIsOver(false);
+  }
+
+  const onImageChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      console.log(event.target.files[0])
+      setImageURL(URL.createObjectURL(event.target.files[0]));
+      setAudioURL('');
     }
   }
     const sendLocation = () => {
@@ -64,28 +195,62 @@ function MessageInputForm(props) {
     console.log('location sent');
   }
 
+  const startRecording = (() => {
+    setIsRecording(true);
+  })
+
+  const quickSendVM = () => {
+    setQuickSent(true);
+    setIsRecording(false);
+  }
+
+  const cancelVM = () => {
+    setIsRecording(false);
+    setAudioURL('');
+    setImageURL('');
+  }
   return(
     <form className="form" onSubmit={handleSubmit}>
-      <div className="text-input">
+      {
+        (imageURL || audioURL) && <div className="attachments">
+          {imageURL && <img className="attachment-preview" src={imageURL} alt="img attachment preview" />}
+          {audioURL && <audio className="attachment-preview" src={audioURL} alt="audio attachment preview" controls/>}
+          <Button
+          value='close'
+          className='attach-button'
+          onClick={() => {setImageURL(''); setAudioURL('')}}
+          />
+        </div>
+      }
+      <div className={isOver ? 'over' : 'text-input'} onDrop={dropHandler} onDragOver={dragOverHandler} onDragLeave={dragLeaveHandler}>
         <input className="message-input"
           placeholder="Cообщение"
           onChange={handleChange}
-          value={value}
+          value={text}
         />
+        {isRecording && <Button
+          value='arrow_upward'
+          className='voice-recording'
+          onClick={quickSendVM}
+        />}
         <Button
           value='location_on'
           className='attach-button'
           onClick={sendLocation}
         />
-        <Button
-          value='attach_file'
+        <label
+          htmlFor="file-input"
           className='attach-file-button attach-button'
-          // onClick={}
-        />
+          >
+          <Icon className='icon' fontSize='30px'>
+            attach_file
+          </Icon>
+        </label>
+        <input type="file" onChange={onImageChange}  accept='image/*' id='file-input' hidden/>
         <Button
-          value='mic'
+          value={isRecording ? 'stop' :'mic'}
           className='attach-button'
-          // onClick={}
+          onClick={isRecording ? cancelVM : startRecording}
         />
       </div>
     </form>
