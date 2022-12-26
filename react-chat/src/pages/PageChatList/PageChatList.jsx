@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import './PageChatList.scss';
 import {Button} from '../../components';
 import vkfs from '../../images/vkfs.jpg';
@@ -8,12 +8,16 @@ import { Link } from 'react-router-dom';
 export function PageChatList () {
   const [error, setError] = useState(null);
   const [chats, setChats] = useState([]);
+  //const [polled, setPolled] = useState(false);
   const [lastMessageGeneral, setLastMessageGeneral] = useState(null);
   
   //const API_URL = 'https://reatlaz.pythonanywhere.com/chats/'
   //const API_URL = '/chats/'
   
+  const prevChats = useRef();
+
   useEffect( () => {
+    prevChats.current = chats;
     window.scrollTo(0, 0);
     const localStorageChats = JSON.parse(localStorage.getItem('chats'));
     if (localStorageChats != null) {
@@ -27,22 +31,42 @@ export function PageChatList () {
     const t = setInterval(() => pollChats(), 10000);
     return () => clearInterval(t);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  async function notify(newChats) {
-    const permission = await Notification.requestPermission();
-    console.log('newChats', newChats)
-    console.log('chats', chats)
-    if (permission === 'granted') {
-      for(let i = 0; i < chats.length; i++) {
-        if (newChats[i] !== chats[i]) {
-          console.log('creating notofication')
-          /*const notifiaction = */new Notification(newChats[i].last_message.sender, { body: newChats[i].last_message.content,
 
-          });
-        }
+  
+  
+  useEffect(() => {
+    const cur = chats
+    const prev = prevChats.current
+    for (let i = 0, j = 0; i < prev.length; i++, j++){
+      console.log(prev[j].last_message.id, cur[i].last_message.id)
+      console.log(prev[j].last_message.id === cur[i].last_message.id)
+      if (prev[j].last_message.id !== cur[i].last_message.id) {
+        notifyUser('Новое сообщение', {body: cur[i].last_message.sender + ': ' + cur[i].last_message.content, icon: '../../images/message.png'});
+        
+        i++;
       }
+    
     }
+    prevChats.current = chats;
+  }, [chats])
 
+  function notifyUser(sender, content) {
+    if (!('Notification' in window)) {
+      alert('Browser does not support notifications');
+    } else if (Notification.permission === 'granted') {
+      new Notification(sender, content);
+      // console.log('notification sent');
+      //const notification = new Notification(chats.cur[i].last_message.sender, {body: chats.cur[i].last_message.content});
+    } else if (Notification.permission !== 'denied') {
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          new Notification(sender, content);
+          // console.log('notification sent');
+        }
+      })
+    }
   }
+
   const pollChats = () => {
     fetch('https://reatlaz.pythonanywhere.com/chats/', {
       mode: 'cors',
@@ -50,10 +74,9 @@ export function PageChatList () {
     .then(resp => resp.json())
     .then(newChats => {
       const data = newChats.data
-      if(data !== chats) {
-        notify(data);
-      }
+      console.log('adding polled data to chats state', data)
       setChats(data);
+
       localStorage.setItem('chats', JSON.stringify(data));
     },
     (error) => {
