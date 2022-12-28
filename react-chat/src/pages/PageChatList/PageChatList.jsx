@@ -1,18 +1,28 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
+import {Link, useParams} from 'react-router-dom'
 import './PageChatList.scss';
 import {Button} from '../../components';
 import vkfs from '../../images/vkfs.jpg';
 import barsiq from '../../images/barsiq.png';
-import { Link } from 'react-router-dom';
+import notificationIcon from '../../images/notificationIcon.png';
 
 export function PageChatList () {
-  const [error, setError] = useState(null);
+//  const [error, setError] = useState(null);
   const [chats, setChats] = useState([]);
+  //const [polled, setPolled] = useState(false);
   const [lastMessageGeneral, setLastMessageGeneral] = useState(null);
+  let { id } = useParams();
+  
   //const API_URL = 'https://reatlaz.pythonanywhere.com/chats/'
   //const API_URL = '/chats/'
   
+  const prevChats = useRef();
+  const prevLastMessageGeneral = useRef();
+
   useEffect( () => {
+    prevChats.current = chats;
+    prevLastMessageGeneral.current = lastMessageGeneral;
+    window.scrollTo(0, 0);
     const localStorageChats = JSON.parse(localStorage.getItem('chats'));
     if (localStorageChats != null) {
       setChats(localStorageChats);
@@ -23,23 +33,64 @@ export function PageChatList () {
     }
     pollChats();
     const t = setInterval(() => pollChats(), 10000);
-    return () => clearInterval(t)
-  }, []);
-  
+    return () => clearInterval(t);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const cur = chats
+    const prev = prevChats.current
+    for (let i = 0, j = 0; i < prev.length; i++, j++){
+      console.log(prev[j], cur[i])
+      console.log(prev[j].last_message.id, cur[i].last_message.id, Number(id))
+      console.log(prev[j].last_message.id === cur[i].last_message.id)
+      if (prev[j].last_message.id < cur[i].last_message.id && Number(id) !== cur[i].id) {
+        notifyUser('Новое сообщение: ' + cur[i].name, {body: cur[i].last_message.sender + ': ' + cur[i].last_message.content, icon: notificationIcon});
+        i++;
+      }
+    }
+    prevChats.current = chats;
+  }, [chats, id])
+
+  useEffect(() => {
+    const cur = lastMessageGeneral
+    const prev = prevLastMessageGeneral.current
+
+    if (prev && prev._id !== cur._id && id !== undefined) {
+      notifyUser('Новое сообщение: Общий чат', {body: cur.author + ': ' + cur.text, icon: notificationIcon});
+    }
+    prevLastMessageGeneral.current = lastMessageGeneral;
+  }, [lastMessageGeneral, id])
+
+
+  function notifyUser(sender, content) {
+    if (!('Notification' in window)) {
+      alert('Browser does not support notifications');
+    } else if (Notification.permission === 'granted') {
+      new Notification(sender, content);
+    } else if (Notification.permission !== 'denied') {
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          new Notification(sender, content);
+        }
+      })
+    }
+  }
+
   const pollChats = () => {
     fetch('https://reatlaz.pythonanywhere.com/chats/', {
       mode: 'cors',
     })
     .then(resp => resp.json())
     .then(newChats => {
-      setChats(newChats.data);
-      console.log(newChats.data)
-      localStorage.setItem('chats', JSON.stringify(newChats.data));
-    },
+      const data = newChats.data
+      console.log('adding polled data to chats state', data)
+      setChats(data);
+
+      localStorage.setItem('chats', JSON.stringify(data));
+    }/*,
     (error) => {
-          // setIsLoaded(true);
           setError(error);
-        });
+        }*/);
 
     fetch('https://tt-front.vercel.app/messages/', {
       mode: 'cors',
@@ -48,43 +99,44 @@ export function PageChatList () {
     .then(resp => resp.json())
     .then(data => {
       const last = data.at(-1)
-      console.log(last);
+      console.log('adding polled data to general chat state', last)
       setLastMessageGeneral(last);
+
       localStorage.setItem('lastMessageGeneral', JSON.stringify(last));
-    }, (error) => {
+    }/*, (error) => {
         setError(error);
-    });
+    }*/);
   }
 
   let chatsJSX = null
   if (chats !== null) {
     chatsJSX = chats.map((chat, index) =>
-    <Link className="chat" to={"/im/" + chat.id} key={index}>
-            <img src={barsiq} className="chat-picture" alt="Not found"/>
-            <div className="chat-info">
-                <div className="chat-text-info" >
-                    <div className="chat-name">
-                        {chat.name}
-                    </div>
-                    <div className="last-message">
-                        {chat.last_message ? (chat.last_message.sender + ': ' + chat.last_message.content) : 'Нет сообщений'}
-                    </div>
-                </div>
-                <div className="delivered">
-                    <div className="last-message-time">
-                        {chat.last_message && getTimeFromISOString(chat.last_message.created_at)}
-                    </div>
-                    <div className="material-icons read-icons">
-                        {chat.last_message && chat.last_message.is_read ? 'done_all' : 'done'}
-                    </div>
-                </div>
-            </div>
-        </Link>
-)
+      <Link className="chat" to={"/im/" + chat.id} key={index}>
+          <img src={barsiq} className="chat-picture" alt="Not found"/>
+          <div className="chat-info">
+              <div className="chat-text-info" >
+                  <div className="chat-name">
+                      {chat.name}
+                  </div>
+                  <div className="last-message">
+                      {chat.last_message ? (chat.last_message.sender + ': ' + chat.last_message.content) : 'Нет сообщений'}
+                  </div>
+              </div>
+              <div className="delivered">
+                  <div className="last-message-time">
+                      {chat.last_message && getTimeFromISOString(chat.last_message.created_at)}
+                  </div>
+                  <div className="material-icons read-icons">
+                      {chat.last_message && chat.last_message.is_read ? 'done_all' : 'done'}
+                  </div>
+              </div>
+          </div>
+      </Link>
+    )
   }
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  } else {
+  // if (error) {
+  //   return <div>Error: {error.message}</div>;
+  // } else {
     return (
       <div className='page-chat-list'>
         <nav>
@@ -110,19 +162,19 @@ export function PageChatList () {
                       <div className="last-message-time">
                           {lastMessageGeneral && getTimeFromISOString(lastMessageGeneral.timestamp)}
                       </div>
-                      <div className="material-icons read-icons">
-                          done
+                      <div className='material-icons read-icons'>
+                          done_all
                       </div>
                   </div>
               </div>
           </Link>
           {chatsJSX}
-          <Button value='edit' className="create-chat"/>
+          <Button value='edit' className='create-chat'/>
         </div>
       </div>
     );
   }
-}
+//}
 
 export function getTimeFromISOString(timestamp) {
   return new Date(timestamp).toLocaleTimeString('ru',
