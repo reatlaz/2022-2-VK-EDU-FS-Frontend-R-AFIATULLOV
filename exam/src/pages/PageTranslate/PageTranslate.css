@@ -11,6 +11,7 @@ body {
   height: 40px;
 
 }
+
 nav {
   background-color: white;
   display: flex;
@@ -35,8 +36,10 @@ nav {
 }
 
 .translate-header{
+  align-items: center;
   height: 50px;
   display: flex;
+  justify-content: space-evenly;
   flex-direction: row;
   border-bottom: 1px solid;
   border-color: rgb(190, 190, 190);
@@ -45,32 +48,97 @@ nav {
   display: flex;
   flex-direction: row;
   height: 100%;
+  width: 100%;
 }
-
+.text-form {
+  width: 100%;
+  height: 100%;
+}
 input {
-  font-size: 30px;
+  color: rgb(100, 100, 100);
+  font-size: 25px;
   font-family: "Product Sans",Arial,sans-serif;
-  width: calc(100% - 60px);
+  width: calc(100% - 40px);
   border: 0;
   height: auto;
   padding: 20px;
 }
 .translate-from{
-  width: 50%;
+  font-size: 25px;
+  min-width: 50%;
   border: 0;
   border-right: 1px solid;
   border-color: rgb(190, 190, 190);
 }
 .translate-to{
+  width: 50% !important;
+  text-align: left;
+  font-size: 25px;
+  font-family: "Product Sans",Arial,sans-serif;
   width: 50%;
+  border: 0;
+  height: auto;
+  padding: 20px;
 }
 input::placeholder  {
-  font-size: 20px;
+  font-size: 25px;
 }
-
+input:focus {
+  outline: none !important;
+}
+.language {
+  width: calc(50% - 20px);
+}
+.arrow {
+  width: 40px;
+}
 .history-button {
-  
   margin: 20px 30px;
   display: flex;
   flex-direction: row-reverse;
+}
+
+.custom-dropdown {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 10px; /* demo only */
+}
+
+.custom-dropdown select {
+  background-color: #e9e9e9;
+  color: rgb(100, 100, 100);
+  font-size: inherit;
+  padding: .5em;
+  padding-right: 2.5em;	
+  border: 0;
+  margin: 5px;
+  border-radius: 3px;
+  text-indent: 0.01px;
+  width: 425.5px;
+  -webkit-appearance: button;
+}
+
+.custom-dropdown::before,
+.custom-dropdown::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+
+.custom-dropdown select[disabled] {
+  color: rgba(0,0,0,.3);
+}
+
+.custom-dropdown select[disabled]::after {
+  color: rgba(0,0,0,.1);
+}
+
+.custom-dropdown::before {
+  background-color: rgba(0,0,0,.15);
+}
+
+.custom-dropdown::after {
+  color: rgba(0,0,0,.4);
 }

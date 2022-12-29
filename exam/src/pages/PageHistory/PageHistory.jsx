@@ -1,25 +1,36 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {Link, useParams} from 'react-router-dom'
+import React, {useState} from 'react';
+// import {Link, useParams} from 'react-router-dom'
 import {Button} from '../../components';
 import './PageHistory.css';
 
 export function PageHistory() {
   const [history, setHistory] = useState(JSON.parse(localStorage.getItem('history')));
-  useEffect(() => {
-    console.log(history)
-  }, [])
+  // useEffect(() => {
+  //   console.log(history)
+  // }, [])
   return (
     <div className='page-translate'>
     <nav>
       <div className='heading'>
-        VK Translate
+        История
       </div>
     </nav>
-    <div className='translate-box'>
-      {history && history.map((i) => <div>{i}</div>)}
+
+    <div className='translate-history'>
+      {history && history.map(
+        (item, index) => <div
+        className='history-item'
+        key={index}>
+          {item}
+        </div>
+      )}
     </div>
-    <div className='history-button'>
+    <div className='history-buttons'>
+
       <Button className='button' value='arrow_back' goTo='/'/>
+      <div className='clear-button' onClick={() =>  {localStorage.clear(); setHistory([])}}>
+        Очистить историю
+      </div>
     </div>
 
     </div>
