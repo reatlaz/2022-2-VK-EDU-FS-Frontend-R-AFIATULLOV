@@ -1,11 +1,15 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {Link, useParams} from 'react-router-dom'
+import { connect } from 'react-redux'
+
 import { Icon } from '@mui/material';
 import './PageChat.scss';
 import {Message, Button} from '../../components';
 import barsiq from '../../images/barsiq.png';
 import {getTimeFromISOString} from '../'
 import {PageChatList} from '..'
+import { getMessages } from '../../actions';
+
 
 function Messages(props) {
   const messages = props.messages;
@@ -265,12 +269,13 @@ function MessageInputForm(props) {
   )
 }
 
-export function PageChat () {
+function PageChat (props) {
   //import for notifications support
   PageChatList();
   let { id } = useParams();
   //const [error, setError] = useState(null);
-  const [messages, setMessages] = useState([]);
+  const getMessages = props.getMessages
+  // const [messages, setMessages] = useState([]);
   const [chat, setChat] = useState({name: ''});
   const [lastLogin, setLastLogin] = useState('');
 
@@ -307,18 +312,10 @@ export function PageChat () {
       }/*,
       (error) => setError(error)*/);
   }
-const pollCallback = useCallback(
-    () => { fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
-      mode: 'cors',
-      headers: {'Access-Control-Allow-Origin': '*'}
-      })
-      .then(resp => resp.json())
-      .then(newMessages => {
-        console.log(newMessages.data)
-        setMessages(newMessages.data);
-        localStorage.setItem('messages' + id, JSON.stringify(newMessages.data));
-      }/*,(error) => {setError(error)}*/);
-    }, [id]);
+  const pollCallback = useCallback(() => {
+      getMessages(id)
+    }, [id, getMessages]);
+
   useEffect( () => {
     const localStorageMessages = JSON.parse(localStorage.getItem("messages" + id));
     if (localStorageMessages != null) {
@@ -365,7 +362,7 @@ const pollCallback = useCallback(
           <Button className='nav-button' value='search'/>
           <Button className='nav-button' value='more_vert'/>
         </nav>
-        <Messages messages={messages}/>
+        <Messages messages={props.messages}/>
         <MessageInputForm
           changeState={changeState}
           id={id}
@@ -376,6 +373,12 @@ const pollCallback = useCallback(
     );
   }
 //}
+
+const mapStateToProps= (state) => ({
+  messages: state.messages.messages,
+})
+
+export const ConnectedPageChat = connect(mapStateToProps, {getMessages})(PageChat)
 
 function timeSince(isoString) {
   const date = new Date(isoString);
