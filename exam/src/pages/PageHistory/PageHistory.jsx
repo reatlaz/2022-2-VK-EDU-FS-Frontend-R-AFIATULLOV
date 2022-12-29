@@ -4,10 +4,10 @@ import {Button} from '../../components';
 import './PageHistory.css';
 
 export function PageHistory() {
-  const [text, setText] = useState('');
-  const handleChange = (event) => {
-    setText(event.target.value);
-  }
+  const [history, setHistory] = useState(JSON.parse(localStorage.getItem('history')));
+  useEffect(() => {
+    console.log(history)
+  }, [])
   return (
     <div className='page-translate'>
     <nav>
@@ -16,25 +16,10 @@ export function PageHistory() {
       </div>
     </nav>
     <div className='translate-box'>
-      <div className='translate-header'>
-
-      </div>
-      <div className='translate'>
-        <div className='translate-from'>
-          <input className='translate-input'
-            placeholder="Введите текст"
-            onChange={handleChange}
-            value={text}
-          />
-        </div>
-        <div className='translate-to'>
-          <p>Translation</p>
-        </div>
-      </div>
-
+      {history && history.map((i) => <div>{i}</div>)}
     </div>
     <div className='history-button'>
-      <Button className='button' value='device_reset' to='/history'/>
+      <Button className='button' value='arrow_back' goTo='/'/>
     </div>
 
     </div>

@@ -5,7 +5,8 @@ import './PageTranslate.css';
 export function PageTranslate() {
   const [text, setText] = useState('');
   const [translatedText, setTranslatedText] = useState('Translation');
-  const [language, setLanguage] = useState('');
+  const [language, setLanguage] = useState('ru');
+  const [detectedLanguage, setDetectedLanguage] = useState('Язык определится автоматически');
   const handleChange = (event) => {
     setText(event.target.value);
   }
@@ -31,7 +32,15 @@ export function PageTranslate() {
     fetch(`https://microsoft-translator-text.p.rapidapi.com/translate?to%5B0%5D=${to}&api-version=3.0&profanityAction=NoAction&textType=plain`, options)
       .then(response => response.json())
       .then(response => {
-        setTranslatedText(response)
+        const res = response[0].translations[0].text
+        let history = JSON.parse(localStorage.getItem('history'));
+        if(history === null) {
+          history = []
+        }
+        console.log(response[0].translations[0])
+        setTranslatedText(res);
+        history.push(res);
+        localStorage.setItem('history', JSON.stringify(history));
       })
       .catch(err => console.error(err));
   }
@@ -45,6 +54,9 @@ export function PageTranslate() {
     <div className='translate-box'>
       <div className='translate-header'>
 
+        Язык определяется автоматически
+        {'\n'}
+        {language}
       </div>
       <div className='translate'>
         <div className='translate-from'>
