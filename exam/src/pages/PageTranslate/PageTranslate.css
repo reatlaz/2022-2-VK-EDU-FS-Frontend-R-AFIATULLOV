@@ -116,7 +116,6 @@ input:focus {
   border-radius: 3px;
   text-indent: 0.01px;
   width: 425.5px;
-  -webkit-appearance: button;
 }
 
 .custom-dropdown::before,
