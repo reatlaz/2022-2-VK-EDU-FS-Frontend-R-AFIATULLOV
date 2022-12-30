@@ -25,10 +25,13 @@ body {
 }
 
 .history-item {
+  text-align: left;
   padding: 15px;
   border-bottom: 1px solid;
   border-color: rgb(190, 190, 190);
   transition: 0.25s;
+  margin-bottom:-1px;
+  margin-top:1px;
 }
 .history-item:hover {
   padding: 15px;
@@ -43,8 +46,10 @@ body {
   background-color: white;
   margin: 20px 30px;
   min-height: 300px;
+  height: max-content;
   border: 1px solid;
   border-color: rgb(190, 190, 190);
+  overflow:hidden;
 }
 
 .history-buttons {
@@ -72,4 +77,11 @@ body {
 .clear-button:hover {
   background-color: #5297ff;
 
+}
+
+.black-text {
+  color: black;
+}
+.lang-name {
+  margin-bottom: 10px;
 }

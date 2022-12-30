@@ -21,7 +21,11 @@ export function PageHistory() {
         (item, index) => <div
         className='history-item'
         key={index}>
-          {item}
+          <div className='black-text'>
+            <div className='lang-name'>{'→ ' + item.language}</div>        
+            <div>{item.text}</div>
+          </div>
+          <div>{item.translatedText}</div>
         </div>
       )}
     </div>

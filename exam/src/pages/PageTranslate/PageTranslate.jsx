@@ -10,6 +10,7 @@ export function PageTranslate() {
   const [translatedText, setTranslatedText] = useState('Translation');
 
   const [languages, setLanguages] = useState([]);
+  const [langMap, setLangMap] = useState(new Map());
   // const [detectedLanguage, setDetectedLanguage] = useState('Язык определится автоматически');
   useEffect(() => {
     chooseLanguage()
@@ -38,14 +39,17 @@ export function PageTranslate() {
     fetch('https://microsoft-translator-text.p.rapidapi.com/languages?api-version=3.0', options)
       .then(response => response.json())
       .then(response => {
-        console.log(response)
+        // console.log(response)
 
         let langs = []
+        let langsMap = new Map()
         Object.keys(response.translation).forEach(function(key, index) {
           langs.push({key, ...(response.translation[key])})
+          langsMap.set(key, response.translation[key].name)
         });
         setLanguages(langs)
-        console.log(langs)
+        setLangMap(langsMap)
+        // console.log(langs)
         })
       .catch(err => console.error(err));
   }
@@ -61,7 +65,6 @@ export function PageTranslate() {
     };
     const e = document.getElementById('lang-select');
     const language = e.value;
-    console.log(language)
 
     fetch(`https://microsoft-translator-text.p.rapidapi.com/translate?to%5B0%5D=${language}&api-version=3.0&profanityAction=NoAction&textType=plain`, options)
       .then(response => response.json())
@@ -71,9 +74,13 @@ export function PageTranslate() {
         if(history === null) {
           history = []
         }
-        console.log(response[0].translations[0])
+        // console.log(response[0].translations[0])
         setTranslatedText(res);
-        history.push(res);
+        history.push({
+          language: langMap.get(language),
+          text: text,
+          translatedText: res
+          });
         localStorage.setItem('history', JSON.stringify(history));
       })
       .catch(err => console.error(err));
@@ -102,7 +109,7 @@ export function PageTranslate() {
         <div className='language' onClick={chooseLanguage}>
           <span className="custom-dropdown">
             <select id='lang-select'>
-              <option value="">Select language</option>
+              {/* <option value="">Select language</option> */}
               {languages && languages.map((item, index) => <option value={item.key} key={index}>{item.name + ' (' + item.nativeName + ')'}</option>
               )}
             </select>
