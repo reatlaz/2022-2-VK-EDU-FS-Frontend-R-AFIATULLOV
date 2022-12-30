@@ -20,7 +20,7 @@ function PageTranslate(props) {
     props.getLanguages();
     console.log('getLanguages called')
 
-  }, [])
+  }, [])  // eslint-disable-line react-hooks/exhaustive-deps
   const handleChange = (event) => {
     setText(event.target.value);
   }
@@ -53,7 +53,6 @@ function PageTranslate(props) {
         }
         // console.log(response[0].translations[0])
         setTranslatedText(res);
-        console.log(langMap, langMap instanceof Map)
         history.push({
           language: langMap.get(language),
           text: text,
