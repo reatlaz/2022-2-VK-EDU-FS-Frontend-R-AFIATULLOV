@@ -1,19 +1,25 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Icon } from '@mui/material';
+import { connect } from 'react-redux';
+
 import {Button} from '../../components';
 
 import './PageTranslate.css';
-import { useEffect } from 'react';
+import { getLanguages } from '../../actions';
 
-export function PageTranslate() {
+
+
+function PageTranslate(props) {
   const [text, setText] = useState('');
   const [translatedText, setTranslatedText] = useState('Translation');
 
-  const [languages, setLanguages] = useState([]);
-  const [langMap, setLangMap] = useState(new Map());
+  const languages = props.languages;
+  const langMap = props.langMap;
   // const [detectedLanguage, setDetectedLanguage] = useState('Язык определится автоматически');
   useEffect(() => {
-    chooseLanguage()
+    props.getLanguages();
+    console.log('getLanguages called')
+
   }, [])
   const handleChange = (event) => {
     setText(event.target.value);
@@ -22,36 +28,7 @@ export function PageTranslate() {
     event.preventDefault();
     if (text !== '') {
       translate();
-      setText('');
-
     }
-  }
-  const chooseLanguage = () => {
-    const options = {
-      method: 'GET',
-      headers: {
-        'X-RapidAPI-Key': 'df5ffa97f3mshfa5277882376ad1p1db7b7jsnb69ba524116a',
-        'X-RapidAPI-Host': 'microsoft-translator-text.p.rapidapi.com',
-        'x-rapidapi-ua': 'RapidAPI-Playground'
-      }
-    };
-
-    fetch('https://microsoft-translator-text.p.rapidapi.com/languages?api-version=3.0', options)
-      .then(response => response.json())
-      .then(response => {
-        // console.log(response)
-
-        let langs = []
-        let langsMap = new Map()
-        Object.keys(response.translation).forEach(function(key, index) {
-          langs.push({key, ...(response.translation[key])})
-          langsMap.set(key, response.translation[key].name)
-        });
-        setLanguages(langs)
-        setLangMap(langsMap)
-        // console.log(langs)
-        })
-      .catch(err => console.error(err));
   }
   const translate = () => {
     const options = {
@@ -76,6 +53,7 @@ export function PageTranslate() {
         }
         // console.log(response[0].translations[0])
         setTranslatedText(res);
+        console.log(langMap, langMap instanceof Map)
         history.push({
           language: langMap.get(language),
           text: text,
@@ -106,7 +84,7 @@ export function PageTranslate() {
 
 
 
-        <div className='language' onClick={chooseLanguage}>
+        <div className='language'>
           <span className="custom-dropdown">
             <select id='lang-select'>
               {/* <option value="">Select language</option> */}
@@ -139,3 +117,8 @@ export function PageTranslate() {
     </div>
   )
 }
+const mapStateToProps = (state) => ({
+  languages: state.languages.languages,
+  langMap: state.languages.langMap,
+})
+export const ConnectedPageTranslate = connect(mapStateToProps, { getLanguages })(PageTranslate)

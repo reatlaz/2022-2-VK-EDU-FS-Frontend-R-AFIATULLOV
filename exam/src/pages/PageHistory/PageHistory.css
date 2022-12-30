@@ -41,7 +41,8 @@ body {
 }
 .translate-history {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
   border-radius: 12px;
   background-color: white;
   margin: 20px 30px;
