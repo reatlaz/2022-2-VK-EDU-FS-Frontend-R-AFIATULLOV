@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link, useParams} from 'react-router-dom'
 import { connect } from 'react-redux'
 
@@ -8,18 +8,19 @@ import {Message, Button} from '../../components';
 import barsiq from '../../images/barsiq.png';
 import {getTimeFromISOString} from '../'
 import {PageChatList} from '..'
-import { getMessages } from '../../actions';
+import { getMessages} from '../../actions';
 
 
 function Messages(props) {
   const messages = props.messages;
-  const messagesEndRef = useRef(null)
+  // const messagesEndRef = useRef(null)
 
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight);
   }, [messages.length]);
   var messagesJSX = null
   if (messages !== null) {
+    console.log('messages:', messages);
     messagesJSX = messages.map((msg, index) =>
       <Message
         key={index}
@@ -34,7 +35,7 @@ function Messages(props) {
   return (
     <div id="messages">
       {messagesJSX.reverse()}
-    <div ref={messagesEndRef} />
+    {/* <div ref={messagesEndRef} /> */}
     </div>
   )
 }
@@ -91,6 +92,26 @@ function MessageInputForm(props) {
   const handleChange = (event) => {
     setText(event.target.value);
   }
+  const postMessage = (data, id) => {
+    fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        },
+      body: JSON.stringify(data),
+      })
+      .then(resp => resp.json())
+      .then(data => {
+        console.log('posted message response: ', data)
+        props.getMessages(id); // get the newly sent message from server
+        console.log('polling newly created message from server')
+      })
+      .catch(err => {
+
+      })
+  }
   const handleSubmit = (event) => {
     event.preventDefault();
     if (imageURL !== '') {
@@ -101,10 +122,9 @@ function MessageInputForm(props) {
       const newMessage = {
         content: text,
       }
-      props.postMessage(newMessage);
-      props.pollCallback();
+      postMessage(newMessage, props.id);
       setText('');
-      props.changeState();
+      // props.changeState();
       setImageURL('');
     }
   }
@@ -129,10 +149,8 @@ function MessageInputForm(props) {
         content: text,
         image: imgSrc
       }
-      props.postMessage(newMessage);
-      props.pollCallback();
+      postMessage(newMessage, props.id);
       setText('');
-      props.changeState()
       setImageURL('');
     })
   }
@@ -157,15 +175,15 @@ function MessageInputForm(props) {
         audio: audioSrc
       }
       console.log('new message', newMessage)
-      props.postMessage(newMessage);
-      props.pollCallback();
+      postMessage(newMessage, props.id);
+      props.getMessages(props.id);
       if (vmIsQuick){
         setVmIsQuick(false);
       } else {
         setText('');
       }
       setAudioURL('');
-      props.changeState()
+      // props.changeState()
     })
   }
   const dropHandler = (event) => {
@@ -201,8 +219,7 @@ function MessageInputForm(props) {
       const newMessage = {
         content: `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`,
       }
-      props.postMessage(newMessage);
-      props.pollCallback();
+      props.postMessage(newMessage, props.id);
     });
     console.log('location sent');
   }
@@ -274,7 +291,6 @@ function PageChat (props) {
   PageChatList();
   let { id } = useParams();
   //const [error, setError] = useState(null);
-  const getMessages = props.getMessages
   // const [messages, setMessages] = useState([]);
   const [chat, setChat] = useState({name: ''});
   const [lastLogin, setLastLogin] = useState('');
@@ -294,45 +310,20 @@ function PageChat (props) {
     (error) => setError(error)*/);
   }, [id])
 
-  const postMessage = (data) => {
-    console.log(JSON.stringify(data));
-    fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-        },
-      body: JSON.stringify(data),
-      })
-      .then(resp => resp.json())
-      .then(data => {
-        pollCallback(); // get the newly sent message from server
-        console.log(data)
-      }/*,
-      (error) => setError(error)*/);
-  }
-  const pollCallback = useCallback(() => {
-      getMessages(id)
-    }, [id, getMessages]);
-
   useEffect( () => {
-    const localStorageMessages = JSON.parse(localStorage.getItem("messages" + id));
-    if (localStorageMessages != null) {
-      setMessages(localStorageMessages);
-    }
+    props.getMessages(id);
     const localStorageChatInfo = JSON.parse(localStorage.getItem("chat" + id));
     if (localStorageChatInfo != null) {
       setChat(localStorageChatInfo.chat);
       setLastLogin(localStorageChatInfo.last_login);
     }
-    pollCallback();
-    const t = setInterval(() => pollCallback(), 10000);
+
+    const t = setInterval(() => props.getMessages(id), 10000);
     return () => clearInterval(t)
-  }, [id, pollCallback]);
-  const changeState = (props) => {
-  setMessages(JSON.parse(localStorage.getItem("messages" + id)))
-  }
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+  // const changeState = (props) => {
+  //   setMessages(JSON.parse(localStorage.getItem("messages" + id)))
+  // }
   // if (error) {
   //   return <div>Error: {error.message}</div>;
   // } else {
@@ -364,10 +355,10 @@ function PageChat (props) {
         </nav>
         <Messages messages={props.messages}/>
         <MessageInputForm
-          changeState={changeState}
+          // changeState={changeState}
           id={id}
-          postMessage={postMessage}
-          pollCallback={pollCallback}
+          postMessage={props.postMessage}
+          getMessages={props.getMessages}
         />
     </div>
     );

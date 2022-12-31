@@ -1,10 +1,13 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {Link, useParams} from 'react-router-dom'
+import { connect } from 'react-redux'
+
 import './PageChatList.scss';
 import {Button} from '../../components';
 import vkfs from '../../images/vkfs.jpg';
 import barsiq from '../../images/barsiq.png';
 import notificationIcon from '../../images/notificationIcon.png';
+import { getChats} from '../../actions';
 
 export function PageChatList () {
 //  const [error, setError] = useState(null);
@@ -175,6 +178,12 @@ export function PageChatList () {
     );
   }
 //}
+
+const mapStateToProps= (state) => ({
+  chats: state.chats.chats,
+})
+
+export const ConnectedPageChatList = connect(mapStateToProps, {getChats})(PageChatList)
 
 export function getTimeFromISOString(timestamp) {
   return new Date(timestamp).toLocaleTimeString('ru',
