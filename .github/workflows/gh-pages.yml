@@ -10,13 +10,13 @@ jobs:
       with:
         node-version: 16
     - name: Install npm deps
-      working-directory: ./react-chat
+      working-directory: ./exam
       run: npm i
     - name: Build app
-      working-directory: ./react-chat
+      working-directory: ./exam
       run: npm run build
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./react-chat/build
+        publish_dir: ./exam/build
