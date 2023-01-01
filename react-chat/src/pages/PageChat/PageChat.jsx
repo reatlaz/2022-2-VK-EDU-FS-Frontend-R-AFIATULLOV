@@ -7,8 +7,8 @@ import './PageChat.scss';
 import {Message, Button} from '../../components';
 import barsiq from '../../images/barsiq.png';
 import {getTimeFromISOString} from '../'
-import {PageChatList} from '..'
-import { getMessages} from '../../actions';
+import {ConnectedPageChatList} from '..'
+import { getChat, getMessages} from '../../actions';
 
 
 function Messages(props) {
@@ -288,7 +288,7 @@ function MessageInputForm(props) {
 
 function PageChat (props) {
   //import for notifications support
-  PageChatList();
+  ConnectedPageChatList();
   let { id } = useParams();
   //const [error, setError] = useState(null);
   // const [messages, setMessages] = useState([]);
@@ -296,6 +296,8 @@ function PageChat (props) {
   const [lastLogin, setLastLogin] = useState('');
 
   useEffect(() => {
+    // props.getChat(id)
+
     fetch('https://reatlaz.pythonanywhere.com/chats/' + id, {
     mode: 'cors',
     })
@@ -308,7 +310,7 @@ function PageChat (props) {
       
     }/*,
     (error) => setError(error)*/);
-  }, [id])
+  }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect( () => {
     props.getMessages(id);
@@ -369,7 +371,7 @@ const mapStateToProps= (state) => ({
   messages: state.messages.messages,
 })
 
-export const ConnectedPageChat = connect(mapStateToProps, {getMessages})(PageChat)
+export const ConnectedPageChat = connect(mapStateToProps, {getMessages, getChat})(PageChat)
 
 function timeSince(isoString) {
   const date = new Date(isoString);

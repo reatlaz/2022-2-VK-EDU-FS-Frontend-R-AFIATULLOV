@@ -4,7 +4,7 @@ import { Icon } from '@mui/material';
 import './PageChat.scss';
 import {Message, Button} from '../../components';
 import vkfs from '../../images/vkfs.jpg';
-import {PageChatList} from '..'
+import {ConnectedPageChatList} from '..'
 
 function Messages(props) {
   const messages = props.messages;
@@ -268,7 +268,7 @@ function MessageInputForm(props) {
 
 export function PageGeneralChat () {
   //import for notifications support
-  PageChatList();
+  ConnectedPageChatList();
   const [error, setError] = useState(null);
   const [messages, setMessages] = useState([]);
   const postMessage = (data) => {

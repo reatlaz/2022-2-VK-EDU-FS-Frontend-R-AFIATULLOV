@@ -65,14 +65,60 @@ export const getChats = (id) => {
     console.log('state: ', getState())
     dispatch(getChatsStarted())
 
-    const localStorageMessages = JSON.parse(localStorage.getItem("messages" + id));
-    if (localStorageMessages != null) {
-      dispatch(getChatsSuccess(localStorageMessages));
+    const localStorageChats = JSON.parse(localStorage.getItem("chats"));
+    if (localStorageChats != null) {
+      dispatch(getChatsSuccess(localStorageChats));
     } else {
       dispatch(getChatsSuccess([]));
     }
 
-    fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
+    fetch('https://reatlaz.pythonanywhere.com/chats/', {
+      mode: 'cors',
+    })
+    .then(resp => resp.json())
+    .then(newChats => {
+      console.log('adding polled data to chats state', newChats.data)
+      dispatch(getChatsSuccess(newChats.data))
+      localStorage.setItem('chats', JSON.stringify(newChats.data));
+    })
+    .catch(err => {
+      dispatch(getChatsFailure(err.message))
+    });
+
+  })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const getChat = (id) => {
+  return ((dispatch, getState) => {
+    console.log('state: ', getState())
+    dispatch(getChatsStarted())
+
+    const localStorageChats = JSON.parse(localStorage.getItem("chats"));
+    if (localStorageChats != null) {
+      dispatch(getChatsSuccess(localStorageChats));
+    } else {
+      dispatch(getChatsSuccess([]));
+    }
+
+    fetch('https://reatlaz.pythonanywhere.com/chats/' + id, {
       mode: 'cors',
       headers: {'Access-Control-Allow-Origin': '*'}
       })
@@ -85,6 +131,8 @@ export const getChats = (id) => {
       .catch(err => {
         dispatch(getChatsFailure(err.message))
       })
+
+
 
   })
 }

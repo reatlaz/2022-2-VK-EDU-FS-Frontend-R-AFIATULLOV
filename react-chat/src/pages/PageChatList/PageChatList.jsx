@@ -9,15 +9,12 @@ import barsiq from '../../images/barsiq.png';
 import notificationIcon from '../../images/notificationIcon.png';
 import { getChats} from '../../actions';
 
-export function PageChatList () {
+function PageChatList (props) {
 //  const [error, setError] = useState(null);
-  const [chats, setChats] = useState([]);
+  const chats = props.chats;
   //const [polled, setPolled] = useState(false);
   const [lastMessageGeneral, setLastMessageGeneral] = useState(null);
   let { id } = useParams();
-  
-  //const API_URL = 'https://reatlaz.pythonanywhere.com/chats/'
-  //const API_URL = '/chats/'
   
   const prevChats = useRef();
   const prevLastMessageGeneral = useRef();
@@ -26,10 +23,6 @@ export function PageChatList () {
     prevChats.current = chats;
     prevLastMessageGeneral.current = lastMessageGeneral;
     window.scrollTo(0, 0);
-    const localStorageChats = JSON.parse(localStorage.getItem('chats'));
-    if (localStorageChats != null) {
-      setChats(localStorageChats);
-    }
     const localStorageLastMessageGeneral = JSON.parse(localStorage.getItem('lastMessageGeneral'));
     if (localStorageLastMessageGeneral != null) {
       setLastMessageGeneral(localStorageLastMessageGeneral);
@@ -80,20 +73,7 @@ export function PageChatList () {
   }
 
   const pollChats = () => {
-    fetch('https://reatlaz.pythonanywhere.com/chats/', {
-      mode: 'cors',
-    })
-    .then(resp => resp.json())
-    .then(newChats => {
-      const data = newChats.data
-      console.log('adding polled data to chats state', data)
-      setChats(data);
-
-      localStorage.setItem('chats', JSON.stringify(data));
-    }/*,
-    (error) => {
-          setError(error);
-        }*/);
+    props.getChats(id);
 
     fetch('https://tt-front.vercel.app/messages/', {
       mode: 'cors',
