@@ -7,8 +7,8 @@ import './PageChat.scss';
 import {Message, Button} from '../../components';
 import barsiq from '../../images/barsiq.png';
 import {getTimeFromISOString} from '../'
-import {ConnectedPageChatList} from '..'
-import { getChat, getMessages} from '../../actions';
+import {PageChatList} from '..'
+import { getChats, getMessages, getLastMessageGeneral} from '../../actions';
 
 
 function Messages(props) {
@@ -288,7 +288,7 @@ function MessageInputForm(props) {
 
 function PageChat (props) {
   //import for notifications support
-  ConnectedPageChatList();
+  PageChatList(props);
   let { id } = useParams();
   //const [error, setError] = useState(null);
   // const [messages, setMessages] = useState([]);
@@ -369,9 +369,11 @@ function PageChat (props) {
 
 const mapStateToProps= (state) => ({
   messages: state.messages.messages,
+  chats: state.chats.chats,
+  lastMessageGeneral: state.lastMessageGeneral.lastMessageGeneral
 })
 
-export const ConnectedPageChat = connect(mapStateToProps, {getMessages, getChat})(PageChat)
+export const ConnectedPageChat = connect(mapStateToProps, {getMessages, getChats, getLastMessageGeneral})(PageChat)
 
 function timeSince(isoString) {
   const date = new Date(isoString);

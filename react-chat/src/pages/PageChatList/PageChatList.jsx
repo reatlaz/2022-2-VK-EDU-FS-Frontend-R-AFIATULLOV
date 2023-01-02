@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {Link, useParams} from 'react-router-dom'
 import { connect } from 'react-redux'
 
@@ -7,13 +7,11 @@ import {Button} from '../../components';
 import vkfs from '../../images/vkfs.jpg';
 import barsiq from '../../images/barsiq.png';
 import notificationIcon from '../../images/notificationIcon.png';
-import { getChats} from '../../actions';
+import { getChats, getLastMessageGeneral } from '../../actions';
 
-function PageChatList (props) {
-//  const [error, setError] = useState(null);
+export function PageChatList (props) {
   const chats = props.chats;
-  //const [polled, setPolled] = useState(false);
-  const [lastMessageGeneral, setLastMessageGeneral] = useState(null);
+  const lastMessageGeneral = props.lastMessageGeneral;
   let { id } = useParams();
   
   const prevChats = useRef();
@@ -23,10 +21,6 @@ function PageChatList (props) {
     prevChats.current = chats;
     prevLastMessageGeneral.current = lastMessageGeneral;
     window.scrollTo(0, 0);
-    const localStorageLastMessageGeneral = JSON.parse(localStorage.getItem('lastMessageGeneral'));
-    if (localStorageLastMessageGeneral != null) {
-      setLastMessageGeneral(localStorageLastMessageGeneral);
-    }
     pollChats();
     const t = setInterval(() => pollChats(), 10000);
     return () => clearInterval(t);
@@ -36,6 +30,9 @@ function PageChatList (props) {
     const cur = chats
     const prev = prevChats.current
     for (let i = 0, j = 0; i < prev.length; i++, j++){
+      if(prev[j].last_message === null || cur[i].last_message == null) {
+        continue
+      }
       console.log(prev[j], cur[i])
       console.log(prev[j].last_message.id, cur[i].last_message.id, Number(id))
       console.log(prev[j].last_message.id === cur[i].last_message.id)
@@ -74,25 +71,11 @@ function PageChatList (props) {
 
   const pollChats = () => {
     props.getChats(id);
-
-    fetch('https://tt-front.vercel.app/messages/', {
-      mode: 'cors',
-      headers: {'Access-Control-Allow-Origin': '*'}
-    })
-    .then(resp => resp.json())
-    .then(data => {
-      const last = data.at(-1)
-      console.log('adding polled data to general chat state', last)
-      setLastMessageGeneral(last);
-
-      localStorage.setItem('lastMessageGeneral', JSON.stringify(last));
-    }/*, (error) => {
-        setError(error);
-    }*/);
+    props.getLastMessageGeneral();
   }
 
   let chatsJSX = null
-  if (chats !== null) {
+  if (chats !== [null]) {
     chatsJSX = chats.map((chat, index) =>
       <Link className="chat" to={"/im/" + chat.id} key={index}>
           <img src={barsiq} className="chat-picture" alt="Not found"/>
@@ -161,9 +144,10 @@ function PageChatList (props) {
 
 const mapStateToProps= (state) => ({
   chats: state.chats.chats,
+  lastMessageGeneral: state.lastMessageGeneral.lastMessageGeneral
 })
 
-export const ConnectedPageChatList = connect(mapStateToProps, {getChats})(PageChatList)
+export const ConnectedPageChatList = connect(mapStateToProps, {getChats, getLastMessageGeneral})(PageChatList)
 
 export function getTimeFromISOString(timestamp) {
   return new Date(timestamp).toLocaleTimeString('ru',
