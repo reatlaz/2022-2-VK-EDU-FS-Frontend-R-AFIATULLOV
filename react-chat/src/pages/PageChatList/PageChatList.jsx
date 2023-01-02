@@ -1,20 +1,18 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {Link, useParams} from 'react-router-dom'
+import { connect } from 'react-redux'
+
 import './PageChatList.scss';
 import {Button} from '../../components';
 import vkfs from '../../images/vkfs.jpg';
 import barsiq from '../../images/barsiq.png';
 import notificationIcon from '../../images/notificationIcon.png';
+import { getChats, getLastMessageGeneral } from '../../actions';
 
-export function PageChatList () {
-//  const [error, setError] = useState(null);
-  const [chats, setChats] = useState([]);
-  //const [polled, setPolled] = useState(false);
-  const [lastMessageGeneral, setLastMessageGeneral] = useState(null);
+export function PageChatList (props) {
+  const chats = props.chats;
+  const lastMessageGeneral = props.lastMessageGeneral;
   let { id } = useParams();
-  
-  //const API_URL = 'https://reatlaz.pythonanywhere.com/chats/'
-  //const API_URL = '/chats/'
   
   const prevChats = useRef();
   const prevLastMessageGeneral = useRef();
@@ -23,14 +21,6 @@ export function PageChatList () {
     prevChats.current = chats;
     prevLastMessageGeneral.current = lastMessageGeneral;
     window.scrollTo(0, 0);
-    const localStorageChats = JSON.parse(localStorage.getItem('chats'));
-    if (localStorageChats != null) {
-      setChats(localStorageChats);
-    }
-    const localStorageLastMessageGeneral = JSON.parse(localStorage.getItem('lastMessageGeneral'));
-    if (localStorageLastMessageGeneral != null) {
-      setLastMessageGeneral(localStorageLastMessageGeneral);
-    }
     pollChats();
     const t = setInterval(() => pollChats(), 10000);
     return () => clearInterval(t);
@@ -40,6 +30,9 @@ export function PageChatList () {
     const cur = chats
     const prev = prevChats.current
     for (let i = 0, j = 0; i < prev.length; i++, j++){
+      if(prev[j].last_message === null || cur[i].last_message == null) {
+        continue
+      }
       console.log(prev[j], cur[i])
       console.log(prev[j].last_message.id, cur[i].last_message.id, Number(id))
       console.log(prev[j].last_message.id === cur[i].last_message.id)
@@ -77,39 +70,12 @@ export function PageChatList () {
   }
 
   const pollChats = () => {
-    fetch('https://reatlaz.pythonanywhere.com/chats/', {
-      mode: 'cors',
-    })
-    .then(resp => resp.json())
-    .then(newChats => {
-      const data = newChats.data
-      console.log('adding polled data to chats state', data)
-      setChats(data);
-
-      localStorage.setItem('chats', JSON.stringify(data));
-    }/*,
-    (error) => {
-          setError(error);
-        }*/);
-
-    fetch('https://tt-front.vercel.app/messages/', {
-      mode: 'cors',
-      headers: {'Access-Control-Allow-Origin': '*'}
-    })
-    .then(resp => resp.json())
-    .then(data => {
-      const last = data.at(-1)
-      console.log('adding polled data to general chat state', last)
-      setLastMessageGeneral(last);
-
-      localStorage.setItem('lastMessageGeneral', JSON.stringify(last));
-    }/*, (error) => {
-        setError(error);
-    }*/);
+    props.getChats(id);
+    props.getLastMessageGeneral();
   }
 
   let chatsJSX = null
-  if (chats !== null) {
+  if (chats !== [null]) {
     chatsJSX = chats.map((chat, index) =>
       <Link className="chat" to={"/im/" + chat.id} key={index}>
           <img src={barsiq} className="chat-picture" alt="Not found"/>
@@ -175,6 +141,13 @@ export function PageChatList () {
     );
   }
 //}
+
+const mapStateToProps= (state) => ({
+  chats: state.chats.chats,
+  lastMessageGeneral: state.lastMessageGeneral.lastMessageGeneral
+})
+
+export const ConnectedPageChatList = connect(mapStateToProps, {getChats, getLastMessageGeneral})(PageChatList)
 
 export function getTimeFromISOString(timestamp) {
   return new Date(timestamp).toLocaleTimeString('ru',

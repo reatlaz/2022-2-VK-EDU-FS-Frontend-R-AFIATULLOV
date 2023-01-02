@@ -1,14 +1,17 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react';
+import React, {useState, useEffect, useCallback } from 'react';
 import {Link} from 'react-router-dom'
+import { connect } from 'react-redux'
+
 import { Icon } from '@mui/material';
 import './PageChat.scss';
 import {Message, Button} from '../../components';
 import vkfs from '../../images/vkfs.jpg';
 import {PageChatList} from '..'
+import { getChats, getMessages, getLastMessageGeneral } from '../../actions';
 
 function Messages(props) {
   const messages = props.messages;
-  const messagesEndRef = useRef(null)
+  // const messagesEndRef = useRef(null)
 
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight);
@@ -29,7 +32,7 @@ function Messages(props) {
   return (
     <div id="messages">
       {messagesJSX.reverse()}
-    <div ref={messagesEndRef} />
+    {/* <div ref={messagesEndRef} /> */}
     </div>
   )
 }
@@ -119,7 +122,7 @@ function MessageInputForm(props) {
     })
     .then(resp => resp.json())
     .then(responseJson => {
-      console.log(responseJson.imgSrc)
+      // console.log(responseJson.imgSrc)
       imgSrc = responseJson.imgSrc;
       const newMessage = {
         author: 'ReAtlaz',
@@ -266,9 +269,10 @@ function MessageInputForm(props) {
   )
 }
 
-export function PageGeneralChat () {
+export function PageGeneralChat (props) {
   //import for notifications support
-  PageChatList();
+  console.log(props)
+  PageChatList(props);
   const [error, setError] = useState(null);
   const [messages, setMessages] = useState([]);
   const postMessage = (data) => {
@@ -356,6 +360,15 @@ export function PageGeneralChat () {
   );
   }
 }
+
+
+const mapStateToProps= (state) => ({
+  messages: state.messages.messages,
+  chats: state.chats.chats,
+  lastMessageGeneral: state.lastMessageGeneral.lastMessageGeneral
+})
+
+export const ConnectedPageGeneralChat = connect(mapStateToProps, {getMessages, getChats, getLastMessageGeneral})(PageGeneralChat)
 
 function getTimeFromISOString(timestamp) {
   return new Date(timestamp).toLocaleTimeString('ru',

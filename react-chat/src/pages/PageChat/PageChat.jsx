@@ -1,21 +1,26 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link, useParams} from 'react-router-dom'
+import { connect } from 'react-redux'
+
 import { Icon } from '@mui/material';
 import './PageChat.scss';
 import {Message, Button} from '../../components';
 import barsiq from '../../images/barsiq.png';
 import {getTimeFromISOString} from '../'
 import {PageChatList} from '..'
+import { getChats, getMessages, getLastMessageGeneral} from '../../actions';
+
 
 function Messages(props) {
   const messages = props.messages;
-  const messagesEndRef = useRef(null)
+  // const messagesEndRef = useRef(null)
 
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight);
   }, [messages.length]);
   var messagesJSX = null
   if (messages !== null) {
+    console.log('messages:', messages);
     messagesJSX = messages.map((msg, index) =>
       <Message
         key={index}
@@ -30,7 +35,7 @@ function Messages(props) {
   return (
     <div id="messages">
       {messagesJSX.reverse()}
-    <div ref={messagesEndRef} />
+    {/* <div ref={messagesEndRef} /> */}
     </div>
   )
 }
@@ -87,6 +92,26 @@ function MessageInputForm(props) {
   const handleChange = (event) => {
     setText(event.target.value);
   }
+  const postMessage = (data, id) => {
+    fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        },
+      body: JSON.stringify(data),
+      })
+      .then(resp => resp.json())
+      .then(data => {
+        console.log('posted message response: ', data)
+        props.getMessages(id); // get the newly sent message from server
+        console.log('polling newly created message from server')
+      })
+      .catch(err => {
+
+      })
+  }
   const handleSubmit = (event) => {
     event.preventDefault();
     if (imageURL !== '') {
@@ -97,10 +122,9 @@ function MessageInputForm(props) {
       const newMessage = {
         content: text,
       }
-      props.postMessage(newMessage);
-      props.pollCallback();
+      postMessage(newMessage, props.id);
       setText('');
-      props.changeState();
+      // props.changeState();
       setImageURL('');
     }
   }
@@ -125,10 +149,8 @@ function MessageInputForm(props) {
         content: text,
         image: imgSrc
       }
-      props.postMessage(newMessage);
-      props.pollCallback();
+      postMessage(newMessage, props.id);
       setText('');
-      props.changeState()
       setImageURL('');
     })
   }
@@ -153,15 +175,15 @@ function MessageInputForm(props) {
         audio: audioSrc
       }
       console.log('new message', newMessage)
-      props.postMessage(newMessage);
-      props.pollCallback();
+      postMessage(newMessage, props.id);
+      props.getMessages(props.id);
       if (vmIsQuick){
         setVmIsQuick(false);
       } else {
         setText('');
       }
       setAudioURL('');
-      props.changeState()
+      // props.changeState()
     })
   }
   const dropHandler = (event) => {
@@ -197,8 +219,7 @@ function MessageInputForm(props) {
       const newMessage = {
         content: `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`,
       }
-      props.postMessage(newMessage);
-      props.pollCallback();
+      props.postMessage(newMessage, props.id);
     });
     console.log('location sent');
   }
@@ -265,16 +286,18 @@ function MessageInputForm(props) {
   )
 }
 
-export function PageChat () {
+function PageChat (props) {
   //import for notifications support
-  PageChatList();
+  PageChatList(props);
   let { id } = useParams();
   //const [error, setError] = useState(null);
-  const [messages, setMessages] = useState([]);
+  // const [messages, setMessages] = useState([]);
   const [chat, setChat] = useState({name: ''});
   const [lastLogin, setLastLogin] = useState('');
 
   useEffect(() => {
+    // props.getChat(id)
+
     fetch('https://reatlaz.pythonanywhere.com/chats/' + id, {
     mode: 'cors',
     })
@@ -287,55 +310,22 @@ export function PageChat () {
       
     }/*,
     (error) => setError(error)*/);
-  }, [id])
+  }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const postMessage = (data) => {
-    console.log(JSON.stringify(data));
-    fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-        },
-      body: JSON.stringify(data),
-      })
-      .then(resp => resp.json())
-      .then(data => {
-        pollCallback(); // get the newly sent message from server
-        console.log(data)
-      }/*,
-      (error) => setError(error)*/);
-  }
-const pollCallback = useCallback(
-    () => { fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
-      mode: 'cors',
-      headers: {'Access-Control-Allow-Origin': '*'}
-      })
-      .then(resp => resp.json())
-      .then(newMessages => {
-        console.log(newMessages.data)
-        setMessages(newMessages.data);
-        localStorage.setItem('messages' + id, JSON.stringify(newMessages.data));
-      }/*,(error) => {setError(error)}*/);
-    }, [id]);
   useEffect( () => {
-    const localStorageMessages = JSON.parse(localStorage.getItem("messages" + id));
-    if (localStorageMessages != null) {
-      setMessages(localStorageMessages);
-    }
+    props.getMessages(id);
     const localStorageChatInfo = JSON.parse(localStorage.getItem("chat" + id));
     if (localStorageChatInfo != null) {
       setChat(localStorageChatInfo.chat);
       setLastLogin(localStorageChatInfo.last_login);
     }
-    pollCallback();
-    const t = setInterval(() => pollCallback(), 10000);
+
+    const t = setInterval(() => props.getMessages(id), 10000);
     return () => clearInterval(t)
-  }, [id, pollCallback]);
-  const changeState = (props) => {
-  setMessages(JSON.parse(localStorage.getItem("messages" + id)))
-  }
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+  // const changeState = (props) => {
+  //   setMessages(JSON.parse(localStorage.getItem("messages" + id)))
+  // }
   // if (error) {
   //   return <div>Error: {error.message}</div>;
   // } else {
@@ -365,17 +355,25 @@ const pollCallback = useCallback(
           <Button className='nav-button' value='search'/>
           <Button className='nav-button' value='more_vert'/>
         </nav>
-        <Messages messages={messages}/>
+        <Messages messages={props.messages}/>
         <MessageInputForm
-          changeState={changeState}
+          // changeState={changeState}
           id={id}
-          postMessage={postMessage}
-          pollCallback={pollCallback}
+          postMessage={props.postMessage}
+          getMessages={props.getMessages}
         />
     </div>
     );
   }
 //}
+
+const mapStateToProps= (state) => ({
+  messages: state.messages.messages,
+  chats: state.chats.chats,
+  lastMessageGeneral: state.lastMessageGeneral.lastMessageGeneral
+})
+
+export const ConnectedPageChat = connect(mapStateToProps, {getMessages, getChats, getLastMessageGeneral})(PageChat)
 
 function timeSince(isoString) {
   const date = new Date(isoString);
