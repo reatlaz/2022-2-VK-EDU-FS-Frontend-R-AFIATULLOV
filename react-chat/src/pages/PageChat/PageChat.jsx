@@ -97,7 +97,8 @@ function MessageInputForm(props) {
       method: 'POST',
       mode: 'cors',
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'http://localhost:3000/',
+        'Access-Control-Allow-Credentials': true,
         'Content-Type': 'application/json',
         },
       body: JSON.stringify(data),
@@ -298,8 +299,13 @@ function PageChat (props) {
   useEffect(() => {
     // props.getChat(id)
 
-    fetch('https://reatlaz.pythonanywhere.com/chats/' + id, {
+    fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/', {
     mode: 'cors',
+    headers: {
+      'Access-Control-Allow-Origin': 'http://localhost:3000/',
+      'Access-Control-Allow-Credentials': true,
+      },
+    credentials: 'include',
     })
     .then(resp => resp.json())
     .then(chatInfo => {
@@ -323,12 +329,7 @@ function PageChat (props) {
     const t = setInterval(() => props.getMessages(id), 10000);
     return () => clearInterval(t)
   }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
-  // const changeState = (props) => {
-  //   setMessages(JSON.parse(localStorage.getItem("messages" + id)))
-  // }
-  // if (error) {
-  //   return <div>Error: {error.message}</div>;
-  // } else {
+
     return (
       <div className='page-chat'>
         <nav>

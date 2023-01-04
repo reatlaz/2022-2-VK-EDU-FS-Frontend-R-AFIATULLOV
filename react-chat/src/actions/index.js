@@ -32,7 +32,11 @@ export const getMessages = (id) => {
 
     fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
       mode: 'cors',
-      headers: {'Access-Control-Allow-Origin': '*'}
+      headers: {
+        'Access-Control-Allow-Origin': 'http://localhost:3000/',
+        'Access-Control-Allow-Credentials': true,
+        },
+      credentials: 'include',
       })
       .then(resp => resp.json())
       .then(newMessages => {
@@ -75,6 +79,11 @@ export const getChats = (id) => {
 
     fetch('https://reatlaz.pythonanywhere.com/chats/', {
       mode: 'cors',
+      headers: {
+        'Access-Control-Allow-Origin': 'http://localhost:3000/',
+        'Access-Control-Allow-Credentials': true,
+        },
+      credentials: 'include',
     })
     .then(resp => resp.json())
     .then(newChats => {
@@ -117,7 +126,9 @@ export const getLastMessageGeneral = () => {
 
     fetch('https://tt-front.vercel.app/messages/', {
       mode: 'cors',
-      headers: {'Access-Control-Allow-Origin': '*'}
+      headers: {
+        'Access-Control-Allow-Origin': 'http://localhost:3000/',
+        },
     })
     .then(resp => resp.json())
     .then(data => {
@@ -163,7 +174,11 @@ export const getChat = (id) => {
 
     fetch('https://reatlaz.pythonanywhere.com/chats/' + id, {
       mode: 'cors',
-      headers: {'Access-Control-Allow-Origin': '*'}
+      headers: {
+        'Access-Control-Allow-Origin': 'http://localhost:3000/',
+        'Access-Control-Allow-Credentials': true,
+        },
+      credentials: 'include',
       })
       .then(resp => resp.json())
       .then(newMessages => {
