@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Link, useParams} from 'react-router-dom'
 import { connect } from 'react-redux'
 
@@ -10,6 +10,7 @@ import notificationIcon from '../../images/notificationIcon.png';
 import { getChats, getLastMessageGeneral } from '../../actions';
 
 export function PageChatList (props) {
+  const [sideBarIsOpen, setSideBarIsOpen] = useState(false);
   const chats = props.chats;
   const lastMessageGeneral = props.lastMessageGeneral;
   let { id } = useParams();
@@ -85,7 +86,7 @@ export function PageChatList (props) {
                       {chat.name}
                   </div>
                   <div className="last-message">
-                      {chat.last_message ? (chat.last_message.sender + ': ' + chat.last_message.content) : 'Нет сообщений'}
+                      {chat.last_message ? ((chat.is_private ? '' : chat.last_message.sender + ': ') + chat.last_message.content) : 'Нет сообщений'}
                   </div>
               </div>
               <div className="delivered">
@@ -93,7 +94,7 @@ export function PageChatList (props) {
                       {chat.last_message && getTimeFromISOString(chat.last_message.created_at)}
                   </div>
                   <div className="material-icons read-icons">
-                      {chat.last_message && chat.last_message.is_read ? 'done_all' : 'done'}
+                      {chat.last_message ? (chat.last_message.is_read ? 'done_all' : 'done') : ''}
                   </div>
               </div>
           </div>
@@ -103,43 +104,64 @@ export function PageChatList (props) {
   // if (error) {
   //   return <div>Error: {error.message}</div>;
   // } else {
-    return (
-      <div className='page-chat-list'>
-        <nav>
-            <Button value='menu' className="nav-button"/>
-            <div className="heading">
-                Messenger
-            </div>
-            <Button value='search' className="nav-button"/>
-        </nav>
-        <div className="chats">
-        <Link className="chat" to="/im/general">
-              <img src={vkfs} className="chat-picture" alt="Not found"/>
-              <div className="chat-info">
-                  <div className="chat-text-info" >
-                      <div className="chat-name">
-                          Общий чат
-                      </div>
-                      <div className="last-message">
-                          {lastMessageGeneral ? (lastMessageGeneral.author + ': ' + lastMessageGeneral.text) : 'Нет сообщений'}
-                      </div>
-                  </div>
-                  <div className="delivered">
-                      <div className="last-message-time">
-                          {lastMessageGeneral && getTimeFromISOString(lastMessageGeneral.timestamp)}
-                      </div>
-                      <div className='material-icons read-icons'>
-                          done_all
-                      </div>
-                  </div>
-              </div>
-          </Link>
-          {chatsJSX}
-          <Button value='edit' className='create-chat'/>
-        </div>
-      </div>
-    );
+
+  const openSideBar = () => {
+    document.getElementById('chatListSidebar').style.width = '250px';
+    setSideBarIsOpen(true);
   }
+
+  const closeSideBar = () => {
+    document.getElementById('chatListSidebar').style.width = '0';
+    setSideBarIsOpen(false);
+  }
+
+  const logOut = () => {
+    localStorage.setItem('sessionExpires', JSON.stringify(null));
+    window.location.replace('https://reatlaz.pythonanywhere.com/logout/')
+  }
+  return (
+    <div id='main' className='page-chat-list'>
+      <div id="chatListSidebar" className="sidebar">
+        {/* <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Clients</a> */}
+        <div onClick={logOut}>Log out</div>
+      </div>
+      <nav>
+          <Button value={sideBarIsOpen ? 'close' : 'menu'} onClick={sideBarIsOpen ? closeSideBar : openSideBar} className="nav-button"/>
+          <div className="heading">
+              Messenger
+          </div>
+          <Button value='search' className="nav-button"/>
+      </nav>
+      <div className="chats">
+      <Link className="chat" to="/im/general">
+            <img src={vkfs} className="chat-picture" alt="Not found"/>
+            <div className="chat-info">
+                <div className="chat-text-info" >
+                    <div className="chat-name">
+                        Общий чат
+                    </div>
+                    <div className="last-message">
+                        {lastMessageGeneral ? (lastMessageGeneral.author + ': ' + lastMessageGeneral.text) : 'Нет сообщений'}
+                    </div>
+                </div>
+                <div className="delivered">
+                    <div className="last-message-time">
+                        {lastMessageGeneral && getTimeFromISOString(lastMessageGeneral.timestamp)}
+                    </div>
+                    <div className='material-icons read-icons'>
+                        done_all
+                    </div>
+                </div>
+            </div>
+        </Link>
+        {chatsJSX}
+        <Button value='edit' className='create-chat'/>
+      </div>
+    </div>
+  );
+}
 //}
 
 const mapStateToProps= (state) => ({

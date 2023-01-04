@@ -1,0 +1,89 @@
+html {
+    box-sizing: border-box;
+    height: 100vh;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+::placeholder {
+    font-size: 40px;
+}
+body {
+    margin: 0;
+    color: #333;
+    font-size: 23px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    line-height: 20px;
+    display: block;
+
+}
+.page-login {
+    background-color: #7A009F;
+
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+.login-heading{
+    color: white;
+    font-size: 40px;
+    margin: 20px;
+    height: 60px;
+    line-height: 60px;
+}
+.login-button-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.login-button>img {
+    padding: 10px;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.288);
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+}
+
+.login-button {
+    margin: 5px 0;
+    color: white;
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    border-radius: 7px;
+    transition: 0.25s;
+    // cursor: pointer;
+    text-decoration: none;
+}
+.login-button-text {
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    width: calc(100% - 40px);
+}
+.google-auth {
+    background-color: rgb(237, 42, 42);
+
+}
+.google-auth:hover {
+    background-color: rgb(129, 3, 3); 
+}
+.google-auth:active {
+    background-color: rgb(87, 0, 0); 
+}
+.error {
+    margin-top: 30px;
+    padding: 20px;
+    transition: 0.25s;
+    color: white;
+    background-color: red;
+}
