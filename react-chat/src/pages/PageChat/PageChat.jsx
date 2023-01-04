@@ -101,6 +101,7 @@ function MessageInputForm(props) {
         'Access-Control-Allow-Credentials': true,
         'Content-Type': 'application/json',
         },
+        credentials: 'include',
       body: JSON.stringify(data),
       })
       .then(resp => resp.json())
