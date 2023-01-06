@@ -93,7 +93,7 @@ function MessageInputForm(props) {
     setText(event.target.value);
   }
   const postMessage = (data, id) => {
-    fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
+    fetch('/api/chats/' + id + '/messages/', {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -300,7 +300,7 @@ function PageChat (props) {
   useEffect(() => {
     // props.getChat(id)
 
-    fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/', {
+    fetch('/api/chats/' + id + '/', {
     mode: 'cors',
     headers: {
       'Access-Control-Allow-Origin': 'http://localhost:3000/',

@@ -30,7 +30,7 @@ export const getMessages = (id) => {
       dispatch(getMessagesSuccess([]));
     }
 
-    fetch('https://reatlaz.pythonanywhere.com/chats/' + id + '/messages/', {
+    fetch('/api/chats/' + id + '/messages/', {
       mode: 'cors',
       headers: {
         'Access-Control-Allow-Origin': 'http://localhost:3000/',
@@ -77,7 +77,7 @@ export const getChats = (id) => {
       dispatch(getChatsSuccess([]));
     }
 
-    fetch('https://reatlaz.pythonanywhere.com/chats/', {
+    fetch('/api/chats/', {
       mode: 'cors',
       headers: {
         'Access-Control-Allow-Origin': 'http://localhost:3000/',
@@ -172,7 +172,7 @@ export const getChat = (id) => {
       dispatch(getChatsSuccess([]));
     }
 
-    fetch('https://reatlaz.pythonanywhere.com/chats/' + id, {
+    fetch('/api/chats/' + id, {
       mode: 'cors',
       headers: {
         'Access-Control-Allow-Origin': 'http://localhost:3000/',

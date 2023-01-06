@@ -9,7 +9,7 @@ export function PageLoginSuccess(props) {
   const [error, setError] = useState(false)
   const getCredentials = async () => {
     try {
-      const data = await fetch('https://reatlaz.pythonanywhere.com/social-auth/login/google-oauth2/', {
+      const data = await fetch('/social-auth/login/google-oauth2/', {
         mode: 'no-cors',
         headers: {
           'Access-Control-Allow-Origin': 'http://localhost:3000/',
