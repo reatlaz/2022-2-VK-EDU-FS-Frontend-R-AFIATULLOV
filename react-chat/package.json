@@ -49,6 +49,7 @@
     ]
   },
   "devDependencies": {
+    "css-sprite-loader": "^0.3.4",
     "sass": "^1.56.1"
   }
 }
