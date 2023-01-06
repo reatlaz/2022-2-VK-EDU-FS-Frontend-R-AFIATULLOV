@@ -27,7 +27,7 @@ export const getMessages = (id) => {
     if (localStorageMessages != null) {
       dispatch(getMessagesSuccess(localStorageMessages));
     } else {
-      dispatch(getMessagesSuccess([]));
+      dispatch(getMessagesSuccess({data: [], user_id: null}));
     }
 
     fetch('/api/chats/' + id + '/messages/', {
@@ -40,9 +40,9 @@ export const getMessages = (id) => {
       })
       .then(resp => resp.json())
       .then(newMessages => {
-        console.log(newMessages.data)
-        dispatch(getMessagesSuccess(newMessages.data))
-        localStorage.setItem('messages' + id, JSON.stringify(newMessages.data));
+        console.log(newMessages)
+        dispatch(getMessagesSuccess(newMessages))
+        localStorage.setItem('messages' + id, JSON.stringify(newMessages));
       })
       .catch(err => {
         dispatch(getMessagesFailure(err.message))

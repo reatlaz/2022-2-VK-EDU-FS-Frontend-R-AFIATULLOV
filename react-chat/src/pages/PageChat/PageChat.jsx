@@ -13,6 +13,8 @@ import { getChats, getMessages, getLastMessageGeneral} from '../../actions';
 
 function Messages(props) {
   const messages = props.messages;
+  const user = props.user_id
+
   // const messagesEndRef = useRef(null)
 
   useEffect(() => {
@@ -21,6 +23,7 @@ function Messages(props) {
   var messagesJSX = null
   if (messages !== null) {
     console.log('messages:', messages);
+    console.log(props)
     messagesJSX = messages.map((msg, index) =>
       <Message
         key={index}
@@ -28,8 +31,8 @@ function Messages(props) {
         image={msg.image}
         audio={msg.audio}
         time={getTimeFromISOString(msg.created_at)}
-        sender={msg.sender === 'guest' ? ' ' : msg.sender}
-        isMine={msg.sender === 'guest'}
+        sender={msg.sender === user ? ' ' : msg.sender_name}
+        isMine={msg.sender === user}
       />)
   }
   return (
@@ -92,7 +95,25 @@ function MessageInputForm(props) {
   const handleChange = (event) => {
     setText(event.target.value);
   }
+  const getCookie = (name) => {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    console.log(name, cookieValue)
+    return cookieValue;
+  }
+  
   const postMessage = (data, id) => {
+      var csrftoken = getCookie('csrftoken');
     fetch('/api/chats/' + id + '/messages/', {
       method: 'POST',
       mode: 'cors',
@@ -100,6 +121,9 @@ function MessageInputForm(props) {
         'Access-Control-Allow-Origin': 'http://localhost:3000/',
         'Access-Control-Allow-Credentials': true,
         'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': csrftoken,
+        'Accept': 'application/json',
         },
         credentials: 'include',
       body: JSON.stringify(data),
@@ -357,7 +381,7 @@ function PageChat (props) {
           <Button className='nav-button' value='search'/>
           <Button className='nav-button' value='more_vert'/>
         </nav>
-        <Messages messages={props.messages}/>
+        <Messages messages={props.messages} user_id={props.user_id}/>
         <MessageInputForm
           // changeState={changeState}
           id={id}
@@ -371,6 +395,7 @@ function PageChat (props) {
 
 const mapStateToProps= (state) => ({
   messages: state.messages.messages,
+  user_id: state.messages.user_id,
   chats: state.chats.chats,
   lastMessageGeneral: state.lastMessageGeneral.lastMessageGeneral
 })

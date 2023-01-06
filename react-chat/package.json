@@ -1,6 +1,6 @@
 {
   "homepage": "https://reatlaz.github.io/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV",
-  "proxy":"http://localhost:8000/",
+  "proxy": "http://127.0.0.1:8000",
   "name": "react-chat",
   "version": "0.1.0",
   "private": true,

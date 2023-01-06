@@ -3,6 +3,7 @@ import {GET_MESSAGES_REQUEST, GET_MESSAGES_SUCCESS, GET_MESSAGES_FAILURE} from '
 const initialState = {
   loading: false,
   messages: [],
+  user_id: null,
   error: '',
 }
 
@@ -16,7 +17,8 @@ export default (state = initialState, action) => { // eslint-disable-line  impor
     case GET_MESSAGES_SUCCESS:
       return {
         loading: false,
-        messages: action.payload,
+        messages: action.payload.data,
+        user_id: action.payload.user_id,
         error: '',
       }
     case GET_MESSAGES_FAILURE:
