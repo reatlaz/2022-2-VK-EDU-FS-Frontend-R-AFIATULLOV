@@ -1,4 +1,9 @@
 module.exports = {
+    "settings": {
+        "react": {
+        "version": "detect"
+        }
+    },
     "env": {
         "browser": true,
         "es2021": true
@@ -15,8 +20,9 @@ module.exports = {
         "sourceType": "module"
     },
     "plugins": [
-        // "react"
+        "react"
     ],
+    "ignorePatterns": ["temp.js", "/src/App.test.js"],
     "rules": {
         'semi': 0,
         'import/export': 0,
