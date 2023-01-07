@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-./node_modules/.bin/eslint src/
+react-chat/node_modules/.bin/eslint react-chat/src/
