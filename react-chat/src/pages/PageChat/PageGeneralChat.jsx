@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import { Icon } from '@mui/material';
 import './PageChat.scss';
-import {Message, Button} from '../../components';
+import {Message, Button, EmojiKeyboard} from '../../components';
 import vkfs from '../../images/vkfs.jpg';
 import {PageChatList} from '..'
 import { getChats, getMessages, getLastMessageGeneral } from '../../actions';
@@ -21,6 +21,7 @@ function Messages(props) {
     messagesJSX = messages.map((msg, index) =>
       <Message
         key={index}
+        emojiNames={props.emojiNames}
         text={msg.text}
         image={msg.image}
         audio={msg.audio}
@@ -46,6 +47,7 @@ function MessageInputForm(props) {
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [vmIsQuick, setVmIsQuick] = useState(false);
   const [isOver, setIsOver] = useState(false);
+  const [emojiKeyboardVisible, setEmojiKeyboardVisible] = useState(false);
 
   async function requestRecorder() {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -88,6 +90,10 @@ function MessageInputForm(props) {
   }, [])
   const handleChange = (event) => {
     setText(event.target.value);
+  }
+
+  const onEmojiClick = (emojiName) => {
+    setText(text + ':' + emojiName + ':')
   }
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -240,11 +246,22 @@ function MessageInputForm(props) {
           onChange={handleChange}
           value={text}
         />
+        {emojiKeyboardVisible && <EmojiKeyboard
+
+          onEmojiClick={onEmojiClick}
+          emojiNames={props.emojiNames}
+
+        />}
         {isRecording && <Button
           value='arrow_upward'
           className='voice-recording'
           onClick={quickSendVM}
         />}
+        <Button
+          value='mood'
+          className='attach-button'
+          onClick={() => setEmojiKeyboardVisible(!emojiKeyboardVisible)}
+        />
         <Button
           value='location_on'
           className='attach-button'
@@ -275,6 +292,15 @@ export function PageGeneralChat (props) {
   PageChatList(props);
   const [error, setError] = useState(null);
   const [messages, setMessages] = useState([]);
+
+    const emojiNames = [
+    'angry-face',
+    'anguished-face',
+    'anxious-face-with-sweat',
+    'astonished-face',
+    'eyes',
+    'video-game',
+  ]
   const postMessage = (data) => {
     //console.log(JSON.stringify(data));
     fetch('https://tt-front.vercel.app/message/', {
@@ -349,8 +375,12 @@ export function PageGeneralChat (props) {
         <Button className='nav-button' value='search'/>
         <Button className='nav-button' value='more_vert'/>
       </nav>
-      <Messages messages={messages}/>
+      <Messages
+        messages={messages}
+        emojiNames={emojiNames}
+      />
       <MessageInputForm
+        emojiNames={emojiNames}
         changeState={changeState}
 
         postMessage={postMessage}

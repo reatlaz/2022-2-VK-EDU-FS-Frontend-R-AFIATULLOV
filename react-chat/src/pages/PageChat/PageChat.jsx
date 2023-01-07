@@ -4,29 +4,25 @@ import { connect } from 'react-redux'
 
 import { Icon } from '@mui/material';
 import './PageChat.scss';
-import {Message, Button} from '../../components';
+import {Message, Button, EmojiKeyboard} from '../../components';
 import barsiq from '../../images/barsiq.png';
 import {getTimeFromISOString} from '../'
 import {PageChatList} from '..'
-import { getChats, getMessages, getLastMessageGeneral} from '../../actions';
-
+import { getChats, getMessages, getLastMessageGeneral } from '../../actions';
 
 function Messages(props) {
   const messages = props.messages;
   const user = props.user_id
-
-  // const messagesEndRef = useRef(null)
 
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight);
   }, [messages.length]);
   var messagesJSX = null
   if (messages !== null) {
-    console.log('messages:', messages);
-    console.log(props)
     messagesJSX = messages.map((msg, index) =>
       <Message
         key={index}
+        emojiNames={props.emojiNames}
         text={msg.content}
         image={msg.image}
         audio={msg.audio}
@@ -52,6 +48,7 @@ function MessageInputForm(props) {
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [vmIsQuick, setVmIsQuick] = useState(false);
   const [isOver, setIsOver] = useState(false);
+  const [emojiKeyboardVisible, setEmojiKeyboardVisible] = useState(false);
   
   async function requestRecorder() {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -94,6 +91,10 @@ function MessageInputForm(props) {
   }, [])
   const handleChange = (event) => {
     setText(event.target.value);
+  }
+
+  const onEmojiClick = (emojiName) => {
+    setText(text + ':' + emojiName + ':')
   }
   const getCookie = (name) => {
     let cookieValue = null;
@@ -283,11 +284,22 @@ function MessageInputForm(props) {
           onChange={handleChange}
           value={text}
         />
+        {emojiKeyboardVisible && <EmojiKeyboard
+
+          onEmojiClick={onEmojiClick}
+          emojiNames={props.emojiNames}
+
+        />}
         {isRecording && <Button
           value='arrow_upward'
           className='voice-recording'
           onClick={quickSendVM}
         />}
+        <Button
+          value='mood'
+          className='attach-button'
+          onClick={() => setEmojiKeyboardVisible(!emojiKeyboardVisible)}
+        />
         <Button
           value='location_on'
           className='attach-button'
@@ -320,6 +332,15 @@ function PageChat (props) {
   // const [messages, setMessages] = useState([]);
   const [chat, setChat] = useState({name: ''});
   const [lastLogin, setLastLogin] = useState('');
+
+  const emojiNames = [
+    'angry-face',
+    'anguished-face',
+    'anxious-face-with-sweat',
+    'astonished-face',
+    'eyes',
+    'video-game',
+  ]
 
   useEffect(() => {
     // props.getChat(id)
@@ -381,9 +402,13 @@ function PageChat (props) {
           <Button className='nav-button' value='search'/>
           <Button className='nav-button' value='more_vert'/>
         </nav>
-        <Messages messages={props.messages} user_id={props.user_id}/>
+        <Messages
+          messages={props.messages}
+          user_id={props.user_id}
+          emojiNames={emojiNames}
+        />
         <MessageInputForm
-          // changeState={changeState}
+          emojiNames={emojiNames}
           id={id}
           postMessage={props.postMessage}
           getMessages={props.getMessages}

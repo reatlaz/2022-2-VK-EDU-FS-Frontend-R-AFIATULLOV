@@ -28,6 +28,8 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 
 const createEnvironmentHash = require('./webpack/persistentCache/createEnvironmentHash');
 
+const CSSSpritePlugin = require('css-sprite-loader').Plugin;
+
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
@@ -119,6 +121,10 @@ module.exports = function (webpackEnv) {
       {
         loader: require.resolve('css-loader'),
         options: cssOptions,
+      },
+      // css sprite loader for emoji keyboard
+      {
+        loader: require.resolve('css-sprite-loader')
       },
       {
         // Options for PostCSS as we reference these options twice
@@ -563,6 +569,7 @@ module.exports = function (webpackEnv) {
       ].filter(Boolean),
     },
     plugins: [
+      new CSSSpritePlugin(),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
         Object.assign(

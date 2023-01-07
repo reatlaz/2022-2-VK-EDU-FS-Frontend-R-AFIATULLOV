@@ -18,6 +18,33 @@ export function PageChatList (props) {
   const prevChats = useRef();
   const prevLastMessageGeneral = useRef();
 
+  const emojiNames = [
+    'angry-face',
+    'anguished-face',
+    'anxious-face-with-sweat',
+    'astonished-face',
+    'eyes',
+    'video-game',
+  ]
+  const parseMessage = (message) => {
+    const messageSplit = message.split(':')
+    let lastFragmentWasEmoji = true
+    const messageJSX = messageSplit.map((fragment, index) => {
+      if(emojiNames.includes(fragment)) {
+        lastFragmentWasEmoji = true
+        return <div
+          key={index}
+          className={fragment + ' emoji'}
+        />
+      } else {
+        const res = <span>{lastFragmentWasEmoji ? '' : ':'}{fragment}</span>
+        lastFragmentWasEmoji = false
+        return res
+      }
+    })
+    return messageJSX
+  }
+
   useEffect( () => {
     prevChats.current = chats;
     prevLastMessageGeneral.current = lastMessageGeneral;
@@ -85,9 +112,16 @@ export function PageChatList (props) {
                   <div className="chat-name">
                       {chat.name}
                   </div>
+                  {chat.last_message ?
                   <div className="last-message">
-                      {chat.last_message ? ((chat.is_private ? '' : chat.last_message.sender + ': ') + chat.last_message.content) : 'Нет сообщений'}
-                  </div>
+                    <span>
+                      {chat.is_private ? '' : chat.last_message.sender + ': '}
+                    </span>
+                    {parseMessage(chat.last_message.content)} 
+                  </div>:
+                  <div className="last-message">
+                    'Нет сообщений'
+                  </div>}
               </div>
               <div className="delivered">
                   <div className="last-message-time">
@@ -142,9 +176,18 @@ export function PageChatList (props) {
                     <div className="chat-name">
                         Общий чат
                     </div>
+
+                    {lastMessageGeneral ?
                     <div className="last-message">
-                        {lastMessageGeneral ? (lastMessageGeneral.author + ': ' + lastMessageGeneral.text) : 'Нет сообщений'}
-                    </div>
+                      <span>
+                        {lastMessageGeneral.author + ': '}
+                      </span>
+                      {parseMessage(lastMessageGeneral.text)} 
+                    </div>:
+                    <div className="last-message">
+                      'Нет сообщений'
+                    </div>}
+
                 </div>
                 <div className="delivered">
                     <div className="last-message-time">
