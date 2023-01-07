@@ -3,8 +3,7 @@ import googleLogo from '../../images/google.png';
 // import githubLogo from '../../images/github.png';
 import './PageLogin.scss';
 
-export function PageLogin(props) {
-
+export function PageLogin (props) {
   return (
     <div className='page-login'>
       <div className='login-heading'>
@@ -19,7 +18,6 @@ export function PageLogin(props) {
           <div className='login-button-text'>
             Login with Google
           </div>
-
         </a>
         {/* {error ? <div className='error'>Error: Authentication failed</div> : null} */}
       </div>

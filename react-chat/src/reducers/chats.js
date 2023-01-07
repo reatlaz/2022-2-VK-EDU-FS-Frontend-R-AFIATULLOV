@@ -1,9 +1,9 @@
-import {GET_CHATS_REQUEST, GET_CHATS_SUCCESS, GET_CHATS_FAILURE} from '../constants/ActionTypes';
+import { GET_CHATS_REQUEST, GET_CHATS_SUCCESS, GET_CHATS_FAILURE } from '../constants/ActionTypes';
 
 const initialState = {
   loading: false,
   chats: [],
-  error: '',
+  error: ''
 }
 
 export default (state = initialState, action) => { // eslint-disable-line  import/no-anonymous-default-export
@@ -11,19 +11,19 @@ export default (state = initialState, action) => { // eslint-disable-line  impor
     case GET_CHATS_REQUEST:
       return {
         ...state,
-        loading: true,
+        loading: true
       }
     case GET_CHATS_SUCCESS:
       return {
         loading: false,
         chats: action.payload,
-        error: '',
+        error: ''
       }
     case GET_CHATS_FAILURE:
       return {
         ...state,
         loading: false,
-        error: action.payload,
+        error: action.payload
       }
     default:
       return state

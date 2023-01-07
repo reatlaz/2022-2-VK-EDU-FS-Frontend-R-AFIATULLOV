@@ -1,10 +1,10 @@
-import {GET_MESSAGES_REQUEST, GET_MESSAGES_SUCCESS, GET_MESSAGES_FAILURE} from '../constants/ActionTypes';
+import { GET_MESSAGES_REQUEST, GET_MESSAGES_SUCCESS, GET_MESSAGES_FAILURE } from '../constants/ActionTypes';
 
 const initialState = {
   loading: false,
   messages: [],
   user_id: null,
-  error: '',
+  error: ''
 }
 
 export default (state = initialState, action) => { // eslint-disable-line  import/no-anonymous-default-export
@@ -12,20 +12,20 @@ export default (state = initialState, action) => { // eslint-disable-line  impor
     case GET_MESSAGES_REQUEST:
       return {
         ...state,
-        loading: true,
+        loading: true
       }
     case GET_MESSAGES_SUCCESS:
       return {
         loading: false,
         messages: action.payload.data,
         user_id: action.payload.user_id,
-        error: '',
+        error: ''
       }
     case GET_MESSAGES_FAILURE:
       return {
         ...state,
         loading: false,
-        error: action.payload,
+        error: action.payload
       }
     default:
       return state

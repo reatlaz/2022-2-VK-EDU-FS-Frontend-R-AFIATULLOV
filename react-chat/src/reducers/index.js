@@ -6,5 +6,5 @@ import lastMessageGeneral from './lastMessageGeneral';
 export default combineReducers({
   messages,
   chats,
-  lastMessageGeneral,
+  lastMessageGeneral
 })

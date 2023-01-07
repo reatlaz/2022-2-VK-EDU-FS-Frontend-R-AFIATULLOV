@@ -1,22 +1,22 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom'
 import { Icon } from '@mui/material';
 import './PageProfile.scss';
-import {Button} from '../../components';
+import { Button } from '../../components';
 import barsiq from '../../images/barsiq.png';
 import billy from '../../images/billy.jpeg';
 import smesh from '../../images/смешнявкин.JPG';
 
-function ProfileInputForm(props) {
+function ProfileInputForm (props) {
   const [fullName, setFullName] = useState(
-            (props.userId === '1' && 'Барсик Пушистикович') ||
-            (props.userId === '2' && 'Billy') ||
-            (props.userId === '3' && '404 NOT FOUND')
-            );
+    (props.userId === '1' && 'Барсик Пушистикович') ||
+    (props.userId === '2' && 'Billy') ||
+    (props.userId === '3' && '404 NOT FOUND')
+  );
   const [username, setUsername] = useState(
-            (props.userId === '1' && '@barsiq') ||
-            (props.userId === '2' && '@billy99') ||
-            (props.userId === '3' && '@class10a'));
+    (props.userId === '1' && '@barsiq') ||
+    (props.userId === '2' && '@billy99') ||
+    (props.userId === '3' && '@class10a'));
   const [bio, setBio] = useState(
     (props.userId === '1' && 'I like frogsdgdfgdfgdfgdfgdsfgdfgdfgdfsgdfgdfgdfgdfgdfgdfgdfgdfgdsfgdfsgsdgfdsfg sfsfsdfsdfsd fsdf sdf sdfsd fs') ||
             (props.userId === '2' && 'Performance artist') ||
@@ -34,13 +34,12 @@ function ProfileInputForm(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if(fullName !== '' || username !== '' || bio !== '') {
+    if (fullName !== '' || username !== '' || bio !== '') {
       if (username[0] !== '@') {
         setUsername('@' + username)
       }
       if (username.length < 5) {
         alert('Minimum username length is 5 characters')
-        
         return
       }
       // const newProfile = {
@@ -48,12 +47,12 @@ function ProfileInputForm(props) {
       //   username: username,
       //   bio: bio,
       // };
-      };
-      //insert for submission logic here
-      console.log('form submitted');
+    }
+    // insert for submission logic here
+    console.log('form submitted');
   }
 
-  return(
+  return (
     <form id="profile-form" onSubmit={handleSubmit}>
       <div className='edit-picture'>
         <img
@@ -70,7 +69,6 @@ function ProfileInputForm(props) {
             photo_camera
           </Icon>
         </div>
-            
       </div>
       <div className="profile-form-input" id='full-name'>
         <div className='profile-input-header'>
@@ -83,7 +81,7 @@ function ProfileInputForm(props) {
           />
         </div>
       </div>
-      <div className="profile-form-input"  id='username'>
+      <div className="profile-form-input" id='username'>
         <div className='profile-input-header'>
           Username
         </div>
@@ -97,7 +95,7 @@ function ProfileInputForm(props) {
           Minimum length is 5 characters
         </div>
       </div>
-      <div className="profile-form-input"  id='bio'>
+      <div className="profile-form-input" id='bio'>
         <div className='profile-input-header'>
           Bio
         </div>
@@ -115,9 +113,9 @@ function ProfileInputForm(props) {
   )
 }
 
-export function PageProfile(){
-  let { id } = useParams();
-  useEffect( () => {
+export function PageProfile () {
+  const { id } = useParams();
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, [])
   return (
@@ -138,11 +136,8 @@ export function PageProfile(){
         </button>
       </nav>
       <div className='profile-form'>
-        
         <ProfileInputForm userId={id}/>
       </div>
     </div>
   );
-
 }
-

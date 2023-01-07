@@ -1,9 +1,9 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Link, useParams} from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useParams } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import './PageChatList.scss';
-import {Button} from '../../components';
+import { Button } from '../../components';
 import vkfs from '../../images/vkfs.jpg';
 import barsiq from '../../images/barsiq.png';
 import notificationIcon from '../../images/notificationIcon.png';
@@ -13,8 +13,7 @@ export function PageChatList (props) {
   const [sideBarIsOpen, setSideBarIsOpen] = useState(false);
   const chats = props.chats;
   const lastMessageGeneral = props.lastMessageGeneral;
-  let { id } = useParams();
-  
+  const { id } = useParams();
   const prevChats = useRef();
   const prevLastMessageGeneral = useRef();
 
@@ -24,13 +23,13 @@ export function PageChatList (props) {
     'anxious-face-with-sweat',
     'astonished-face',
     'eyes',
-    'video-game',
+    'video-game'
   ]
   const parseMessage = (message) => {
     const messageSplit = message.split(':')
     let lastFragmentWasEmoji = true
     const messageJSX = messageSplit.map((fragment, index) => {
-      if(emojiNames.includes(fragment)) {
+      if (emojiNames.includes(fragment)) {
         lastFragmentWasEmoji = true
         return <div
           key={index}
@@ -45,27 +44,27 @@ export function PageChatList (props) {
     return messageJSX
   }
 
-  useEffect( () => {
+  useEffect(() => {
     prevChats.current = chats;
     prevLastMessageGeneral.current = lastMessageGeneral;
     window.scrollTo(0, 0);
     pollChats();
     const t = setInterval(() => pollChats(), 10000);
     return () => clearInterval(t);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const cur = chats
     const prev = prevChats.current
-    for (let i = 0, j = 0; i < prev.length; i++, j++){
-      if(prev[j].last_message === null || cur[i].last_message == null) {
+    for (let i = 0, j = 0; i < prev.length; i++, j++) {
+      if (prev[j].last_message === null || cur[i].last_message == null) {
         continue
       }
       console.log(prev[j], cur[i])
       console.log(prev[j].last_message.id, cur[i].last_message.id, Number(id))
       console.log(prev[j].last_message.id === cur[i].last_message.id)
       if (prev[j].last_message.id < cur[i].last_message.id && Number(id) !== cur[i].id) {
-        notifyUser('Новое сообщение: ' + cur[i].name, {body: cur[i].last_message.sender + ': ' + cur[i].last_message.content, icon: notificationIcon});
+        notifyUser('Новое сообщение: ' + cur[i].name, { body: cur[i].last_message.sender + ': ' + cur[i].last_message.content, icon: notificationIcon });
         i++;
       }
     }
@@ -77,13 +76,12 @@ export function PageChatList (props) {
     const prev = prevLastMessageGeneral.current
 
     if (prev && prev._id !== cur._id && id !== undefined) {
-      notifyUser('Новое сообщение: Общий чат', {body: cur.author + ': ' + cur.text, icon: notificationIcon});
+      notifyUser('Новое сообщение: Общий чат', { body: cur.author + ': ' + cur.text, icon: notificationIcon });
     }
     prevLastMessageGeneral.current = lastMessageGeneral;
   }, [lastMessageGeneral, id])
 
-
-  function notifyUser(sender, content) {
+  function notifyUser (sender, content) {
     if (!('Notification' in window)) {
       alert('Browser does not support notifications');
     } else if (Notification.permission === 'granted') {
@@ -105,23 +103,23 @@ export function PageChatList (props) {
   let chatsJSX = null
   if (chats !== [null]) {
     chatsJSX = chats.map((chat, index) =>
-      <Link className="chat" to={"/im/" + chat.id} key={index}>
-          <img src={barsiq} className="chat-picture" alt="Not found"/>
+      <Link className='chat' to={'/im/' + chat.id} key={index}>
+        <img src={barsiq} className="chat-picture" alt="Not found"/>
           <div className="chat-info">
               <div className="chat-text-info" >
                   <div className="chat-name">
                       {chat.name}
                   </div>
-                  {chat.last_message ?
-                  <div className="last-message">
-                    <span>
-                      {chat.is_private ? '' : chat.last_message.sender + ': '}
-                    </span>
-                    {parseMessage(chat.last_message.content)} 
-                  </div>:
-                  <div className="last-message">
-                    'Нет сообщений'
-                  </div>}
+                  {chat.last_message
+                    ? <div className="last-message">
+                      <span>
+                        {chat.is_private ? '' : chat.last_message.sender + ': '}
+                      </span>
+                      {parseMessage(chat.last_message.content)}
+                    </div>
+                    : <div className="last-message">
+                      Нет сообщений
+                    </div>}
               </div>
               <div className="delivered">
                   <div className="last-message-time">
@@ -135,10 +133,6 @@ export function PageChatList (props) {
       </Link>
     )
   }
-  // if (error) {
-  //   return <div>Error: {error.message}</div>;
-  // } else {
-
   const openSideBar = () => {
     document.getElementById('chatListSidebar').style.width = '250px';
     setSideBarIsOpen(true);
@@ -177,16 +171,16 @@ export function PageChatList (props) {
                         Общий чат
                     </div>
 
-                    {lastMessageGeneral ?
-                    <div className="last-message">
-                      <span>
-                        {lastMessageGeneral.author + ': '}
-                      </span>
-                      {lastMessageGeneral.text && parseMessage(lastMessageGeneral.text)} 
-                    </div>:
-                    <div className="last-message">
-                      'Нет сообщений'
-                    </div>}
+                    {lastMessageGeneral
+                      ? <div className="last-message">
+                        <span>
+                          {lastMessageGeneral.author + ': '}
+                        </span>
+                        {lastMessageGeneral.text && parseMessage(lastMessageGeneral.text)}
+                      </div>
+                      : <div className="last-message">
+                        Нет сообщений
+                      </div>}
 
                 </div>
                 <div className="delivered">
@@ -205,16 +199,15 @@ export function PageChatList (props) {
     </div>
   );
 }
-//}
 
-const mapStateToProps= (state) => ({
+const mapStateToProps = (state) => ({
   chats: state.chats.chats,
   lastMessageGeneral: state.lastMessageGeneral.lastMessageGeneral
 })
 
-export const ConnectedPageChatList = connect(mapStateToProps, {getChats, getLastMessageGeneral})(PageChatList)
+export const ConnectedPageChatList = connect(mapStateToProps, { getChats, getLastMessageGeneral })(PageChatList)
 
-export function getTimeFromISOString(timestamp) {
+export function getTimeFromISOString (timestamp) {
   return new Date(timestamp).toLocaleTimeString('ru',
-                 { timeStyle: 'short', hour12: false, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
+    { timeStyle: 'short', hour12: false, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
 }

@@ -2,42 +2,42 @@ import {
   GET_MESSAGES_REQUEST, GET_MESSAGES_SUCCESS, GET_MESSAGES_FAILURE,
   GET_CHATS_REQUEST, GET_CHATS_SUCCESS, GET_CHATS_FAILURE,
   GET_LAST_MESSAGE_GENERAL_REQUEST, GET_LAST_MESSAGE_GENERAL_SUCCESS, GET_LAST_MESSAGE_GENERAL_FAILURE
-  } from '../constants/ActionTypes';
+} from '../constants/ActionTypes';
 
 const getMessagesStarted = () => ({
-  type: GET_MESSAGES_REQUEST,
+  type: GET_MESSAGES_REQUEST
 })
 
 const getMessagesSuccess = (messages) => ({
   type: GET_MESSAGES_SUCCESS,
-  payload: messages,
+  payload: messages
 })
 
 const getMessagesFailure = (errorMessage) => ({
   type: GET_MESSAGES_FAILURE,
-  payload: errorMessage,
+  payload: errorMessage
 })
 
 export const getMessages = (id) => {
-  return ((dispatch, getState) => {
+  return (dispatch, getState) => {
     console.log('state: ', getState())
     dispatch(getMessagesStarted())
 
-    const localStorageMessages = JSON.parse(localStorage.getItem("messages" + id));
+    const localStorageMessages = JSON.parse(localStorage.getItem('messages' + id));
     if (localStorageMessages != null) {
       dispatch(getMessagesSuccess(localStorageMessages));
     } else {
-      dispatch(getMessagesSuccess({data: [], user_id: null}));
+      dispatch(getMessagesSuccess({ data: [], user_id: null }));
     }
 
     fetch('/api/chats/' + id + '/messages/', {
       mode: 'cors',
       headers: {
         'Access-Control-Allow-Origin': 'http://localhost:3000/',
-        'Access-Control-Allow-Credentials': true,
-        },
-      credentials: 'include',
-      })
+        'Access-Control-Allow-Credentials': true
+      },
+      credentials: 'include'
+    })
       .then(resp => resp.json())
       .then(newMessages => {
         console.log(newMessages)
@@ -47,30 +47,29 @@ export const getMessages = (id) => {
       .catch(err => {
         dispatch(getMessagesFailure(err.message))
       })
-
-  })
+  }
 }
 
 const getChatsStarted = () => ({
-  type: GET_CHATS_REQUEST,
+  type: GET_CHATS_REQUEST
 })
 
 const getChatsSuccess = (chats) => ({
   type: GET_CHATS_SUCCESS,
-  payload: chats,
+  payload: chats
 })
 
 const getChatsFailure = (errorMessage) => ({
   type: GET_CHATS_FAILURE,
-  payload: errorMessage,
+  payload: errorMessage
 })
 
 export const getChats = (id) => {
-  return ((dispatch, getState) => {
+  return (dispatch, getState) => {
     console.log('state: ', getState())
     dispatch(getChatsStarted())
 
-    const localStorageChats = JSON.parse(localStorage.getItem("chats"));
+    const localStorageChats = JSON.parse(localStorage.getItem('chats'));
     if (localStorageChats != null) {
       dispatch(getChatsSuccess(localStorageChats));
     } else {
@@ -81,39 +80,38 @@ export const getChats = (id) => {
       mode: 'cors',
       headers: {
         'Access-Control-Allow-Origin': 'http://localhost:3000/',
-        'Access-Control-Allow-Credentials': true,
-        },
-      credentials: 'include',
+        'Access-Control-Allow-Credentials': true
+      },
+      credentials: 'include'
     })
-    .then(resp => resp.json())
-    .then(newChats => {
-      console.log('adding polled data to chats state', newChats.data)
-      dispatch(getChatsSuccess(newChats.data))
-      localStorage.setItem('chats', JSON.stringify(newChats.data));
-    })
-    .catch(err => {
-      dispatch(getChatsFailure(err.message))
-    });
-  })
+      .then(resp => resp.json())
+      .then(newChats => {
+        console.log('adding polled data to chats state', newChats.data)
+        dispatch(getChatsSuccess(newChats.data))
+        localStorage.setItem('chats', JSON.stringify(newChats.data));
+      })
+      .catch(err => {
+        dispatch(getChatsFailure(err.message))
+      });
+  }
 }
 
 const getLastMessageGeneralStarted = () => ({
-  type: GET_LAST_MESSAGE_GENERAL_REQUEST,
+  type: GET_LAST_MESSAGE_GENERAL_REQUEST
 })
 
 const getLastMessageGeneralSuccess = (lastMessageGeneral) => ({
   type: GET_LAST_MESSAGE_GENERAL_SUCCESS,
-  payload: lastMessageGeneral,
+  payload: lastMessageGeneral
 })
 
 const getLastMessageGeneralFailure = (errorMessage) => ({
   type: GET_LAST_MESSAGE_GENERAL_FAILURE,
-  payload: errorMessage,
+  payload: errorMessage
 })
 
-
 export const getLastMessageGeneral = () => {
-  return ((dispatch, getState) => {
+  return (dispatch, getState) => {
     console.log('state: ', getState())
     dispatch(getLastMessageGeneralStarted())
 
@@ -127,45 +125,29 @@ export const getLastMessageGeneral = () => {
     fetch('https://tt-front.vercel.app/messages/', {
       mode: 'cors',
       headers: {
-        'Access-Control-Allow-Origin': 'http://localhost:3000/',
-        },
+        'Access-Control-Allow-Origin': 'http://localhost:3000/'
+      }
     })
-    .then(resp => resp.json())
-    .then(data => {
-      const last = data.at(-1)
-      console.log('adding polled data to general chat state', last);
-      dispatch(getLastMessageGeneralSuccess(last));
+      .then(resp => resp.json())
+      .then(data => {
+        const last = data.at(-1)
+        console.log('adding polled data to general chat state', last);
+        dispatch(getLastMessageGeneralSuccess(last));
 
-      localStorage.setItem('lastMessageGeneral', JSON.stringify(last));
-    })
-    .catch(err => {
-      dispatch(getLastMessageGeneralFailure(err.message))
-    });
-  })
+        localStorage.setItem('lastMessageGeneral', JSON.stringify(last));
+      })
+      .catch(err => {
+        dispatch(getLastMessageGeneralFailure(err.message))
+      });
+  }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export const getChat = (id) => {
-  return ((dispatch, getState) => {
+  return (dispatch, getState) => {
     console.log('state: ', getState())
     dispatch(getChatsStarted())
 
-    const localStorageChats = JSON.parse(localStorage.getItem("chats"));
+    const localStorageChats = JSON.parse(localStorage.getItem('chats'));
     if (localStorageChats != null) {
       dispatch(getChatsSuccess(localStorageChats));
     } else {
@@ -176,10 +158,10 @@ export const getChat = (id) => {
       mode: 'cors',
       headers: {
         'Access-Control-Allow-Origin': 'http://localhost:3000/',
-        'Access-Control-Allow-Credentials': true,
-        },
-      credentials: 'include',
-      })
+        'Access-Control-Allow-Credentials': true
+      },
+      credentials: 'include'
+    })
       .then(resp => resp.json())
       .then(newMessages => {
         console.log(newMessages.data)
@@ -189,10 +171,5 @@ export const getChat = (id) => {
       .catch(err => {
         dispatch(getChatsFailure(err.message))
       })
-
-
-
-  })
+  }
 }
-
-
