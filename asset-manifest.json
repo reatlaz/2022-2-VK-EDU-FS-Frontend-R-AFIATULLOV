@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/static/css/main.846384a6.css",
-    "main.js": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/static/js/main.fbae927b.js",
+    "main.css": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/static/css/main.e0fdfa52.css",
+    "main.js": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/static/js/main.7f24429a.js",
     "static/js/787.890e5f70.chunk.js": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/static/js/787.890e5f70.chunk.js",
     "static/media/смешнявкин.JPG": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/static/media/смешнявкин.77ba1781aa5b49800b18.JPG",
     "static/media/vkfs.jpg": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/static/media/vkfs.a638508de3c423415010.jpg",
     "static/media/notificationIcon.png": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/static/media/notificationIcon.187ce75126c647361c03.png",
     "static/media/billy.jpeg": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/static/media/billy.227e7783a0d4f8c8284c.jpeg",
     "index.html": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/index.html",
-    "main.846384a6.css.map": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/static/css/main.846384a6.css.map",
-    "main.fbae927b.js.map": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/static/js/main.fbae927b.js.map",
+    "main.e0fdfa52.css.map": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/static/css/main.e0fdfa52.css.map",
+    "main.7f24429a.js.map": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/static/js/main.7f24429a.js.map",
     "787.890e5f70.chunk.js.map": "/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV/static/js/787.890e5f70.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.846384a6.css",
-    "static/js/main.fbae927b.js"
+    "static/css/main.e0fdfa52.css",
+    "static/js/main.7f24429a.js"
   ]
 }
