@@ -15,7 +15,7 @@ export function Message(props) {
           className={fragment + ' emoji'}
         />
       } else {
-        const res = <span>{lastFragmentWasEmoji ? '' : ':'}{fragment}</span>
+        const res = <span key={index}>{lastFragmentWasEmoji ? '' : ':'}{fragment}</span>
         lastFragmentWasEmoji = false
         return res
       }

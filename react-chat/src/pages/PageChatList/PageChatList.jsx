@@ -37,7 +37,7 @@ export function PageChatList (props) {
           className={fragment + ' emoji'}
         />
       } else {
-        const res = <span>{lastFragmentWasEmoji ? '' : ':'}{fragment}</span>
+        const res = <span key={index}>{lastFragmentWasEmoji ? '' : ':'}{fragment}</span>
         lastFragmentWasEmoji = false
         return res
       }
@@ -182,7 +182,7 @@ export function PageChatList (props) {
                       <span>
                         {lastMessageGeneral.author + ': '}
                       </span>
-                      {parseMessage(lastMessageGeneral.text)} 
+                      {lastMessageGeneral.text && parseMessage(lastMessageGeneral.text)} 
                     </div>:
                     <div className="last-message">
                       'Нет сообщений'

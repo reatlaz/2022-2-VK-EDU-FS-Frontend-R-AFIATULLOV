@@ -123,9 +123,9 @@ module.exports = function (webpackEnv) {
         options: cssOptions,
       },
       // css sprite loader for emoji keyboard
-      {
-        loader: require.resolve('css-sprite-loader')
-      },
+      // {
+      //   loader: require.resolve('css-sprite-loader')
+      // },
       {
         // Options for PostCSS as we reference these options twice
         // Adds vendor prefixing based on your specified browser support in
@@ -569,7 +569,7 @@ module.exports = function (webpackEnv) {
       ].filter(Boolean),
     },
     plugins: [
-      new CSSSpritePlugin(),
+      // new CSSSpritePlugin(),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
         Object.assign(
