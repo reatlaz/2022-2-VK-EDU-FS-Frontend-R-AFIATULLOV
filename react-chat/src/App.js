@@ -1,16 +1,15 @@
 import React from 'react';
-import {HashRouter as Router, Routes, Route, Navigate} from 'react-router-dom'
-//import logo from './logo.svg';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css';
 
-import {ConnectedPageChat, ConnectedPageGeneralChat, ConnectedPageChatList, PageProfile, PageLogin, PageLoginSuccess} from './pages';
+import { ConnectedPageChat, ConnectedPageGeneralChat, ConnectedPageChatList, PageProfile, PageLogin, PageLoginSuccess } from './pages';
 
-function App()  {
-  const PrivateRoute = ({children}) => {
+function App () {
+  const PrivateRoute = ({ children }) => {
     const sessionExpires = JSON.parse(localStorage.getItem('sessionExpires'))
     return (sessionExpires && Date.parse(sessionExpires) > Date.now()) ? children : <Navigate to='/login'/>
   }
-  const LogInRoute = ({children}) => {
+  const LogInRoute = ({ children }) => {
     const sessionExpires = JSON.parse(localStorage.getItem('sessionExpires'))
     return (sessionExpires && Date.parse(sessionExpires) > Date.now()) ? <Navigate to='/'/> : children
   }
@@ -31,7 +30,6 @@ function App()  {
       </div>
     </Router>
   );
-  
 }
 
 export default App;

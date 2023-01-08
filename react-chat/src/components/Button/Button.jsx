@@ -1,9 +1,9 @@
 import React from 'react';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import './Button.scss';
 import { Icon } from '@mui/material';
 
-export function Button(props) {
+export function Button (props) {
   return (
     <Link
       className={props.className}

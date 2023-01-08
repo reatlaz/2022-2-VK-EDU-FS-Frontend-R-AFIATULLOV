@@ -1,0 +1,57 @@
+.emoji-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    height: 60px;
+    width: 110px;
+    padding: 5px;
+    border: 1px solid rgb(216, 216, 216);
+    font-size: 25px;
+    margin: 15px 25px;
+    background-color: white;
+
+    position: fixed;
+    right: 100px;
+    bottom: 60px;
+}
+
+.emoji-container > .emoji {
+    cursor: pointer;
+}
+
+.emoji {
+    height: 22px;
+    width: 22px;
+    border: 0px;
+}
+.angry-face {
+    background: url('../../emojis/angry-face.png?sprite') no-repeat;
+    background-size: 22px;
+}
+.anguished-face {
+    background: url('../../emojis/anguished-face.png?sprite') no-repeat;
+    background-size: 22px;
+}
+.anxious-face-with-sweat {
+    background: url('../../emojis/anxious-face-with-sweat.png?sprite') no-repeat;
+    background-size: 22px;
+}
+.astonished-face {
+    background: url('../../emojis/astonished-face.png?sprite') no-repeat;
+    background-size: 22px;
+}
+.eyes {
+    background: url('../../emojis/eyes.png?sprite') no-repeat;
+    background-size: 22px;
+}
+.video-game {
+    background: url('../../emojis/video-game.png?sprite') no-repeat;
+    background-size: 22px;
+}
+.eyes {
+    background: url('../../emojis/eyes.png?sprite') no-repeat;
+    background-size: 22px;
+}
+.eyes {
+    background: url('../../emojis/eyes.png?sprite') no-repeat;
+    background-size: 22px;
+}

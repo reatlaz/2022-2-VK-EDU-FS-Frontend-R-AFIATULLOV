@@ -1,26 +1,26 @@
-import React, {useState, useEffect, useCallback } from 'react';
-import {Link} from 'react-router-dom'
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import { Icon } from '@mui/material';
 import './PageChat.scss';
-import {Message, Button} from '../../components';
+import { Message, Button, EmojiKeyboard } from '../../components';
 import vkfs from '../../images/vkfs.jpg';
-import {PageChatList} from '..'
+import { PageChatList } from '..'
 import { getChats, getMessages, getLastMessageGeneral } from '../../actions';
 
-function Messages(props) {
+function Messages (props) {
   const messages = props.messages;
-  // const messagesEndRef = useRef(null)
 
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight);
   }, [messages.length]);
-  var messagesJSX = null
+  let messagesJSX = null
   if (messages !== null) {
     messagesJSX = messages.map((msg, index) =>
       <Message
         key={index}
+        emojiNames={props.emojiNames}
         text={msg.text}
         image={msg.image}
         audio={msg.audio}
@@ -37,7 +37,7 @@ function Messages(props) {
   )
 }
 
-function MessageInputForm(props) {
+function MessageInputForm (props) {
   const [text, setText] = useState('');
   const [audioBlob, setAudioBlob] = useState();
   const [audioURL, setAudioURL] = useState('');
@@ -46,8 +46,9 @@ function MessageInputForm(props) {
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [vmIsQuick, setVmIsQuick] = useState(false);
   const [isOver, setIsOver] = useState(false);
+  const [emojiKeyboardVisible, setEmojiKeyboardVisible] = useState(false);
 
-  async function requestRecorder() {
+  async function requestRecorder () {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     return new MediaRecorder(stream);
   }
@@ -70,8 +71,8 @@ function MessageInputForm(props) {
       setAudioURL(URL.createObjectURL(event.data));
     };
 
-    mediaRecorder.addEventListener("dataavailable", handleData);
-    return () => mediaRecorder.removeEventListener("dataavailable", handleData);
+    mediaRecorder.addEventListener('dataavailable', handleData);
+    return () => mediaRecorder.removeEventListener('dataavailable', handleData);
   }, [mediaRecorder, isRecording]);
 
   useEffect(() => {
@@ -79,15 +80,18 @@ function MessageInputForm(props) {
     if (audioBlob && vmIsQuick) {
       handleVoiceMessage();
     }
-
-  }, [audioBlob, vmIsQuick]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [audioBlob, vmIsQuick]); // // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const inputElement = document.getElementById('file-input');
-    inputElement.addEventListener("change", onImageChange, false);
+    inputElement.addEventListener('change', onImageChange, false);
   }, [])
   const handleChange = (event) => {
     setText(event.target.value);
+  }
+
+  const onEmojiClick = (emojiName) => {
+    setText(text + ':' + emojiName + ':')
   }
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -98,7 +102,7 @@ function MessageInputForm(props) {
     } else if (text !== '') {
       const newMessage = {
         author: 'ReAtlaz',
-        text: text,
+        text
       }
       props.postMessage(newMessage);
       props.pollCallback();
@@ -107,7 +111,7 @@ function MessageInputForm(props) {
       setImageURL('');
     }
   }
-  function handleFiles() {
+  function handleFiles () {
     const formData = new FormData();
     const fileField = document.getElementById('file-input');
     formData.append('image', fileField.files[0]);
@@ -116,24 +120,24 @@ function MessageInputForm(props) {
       method: 'POST',
       mode: 'cors',
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': '*'
       },
-      body: formData,
+      body: formData
     })
-    .then(resp => resp.json())
-    .then(responseJson => {
-      // console.log(responseJson.imgSrc)
-      imgSrc = responseJson.imgSrc;
-      const newMessage = {
-        author: 'ReAtlaz',
-        text: imgSrc
-      }
-      props.postMessage(newMessage);
-      props.pollCallback();
-      setText('');
-      props.changeState()
-      setImageURL('');
-    })
+      .then(resp => resp.json())
+      .then(responseJson => {
+        // console.log(responseJson.imgSrc)
+        imgSrc = responseJson.imgSrc;
+        const newMessage = {
+          author: 'ReAtlaz',
+          text: imgSrc
+        }
+        props.postMessage(newMessage);
+        props.pollCallback();
+        setText('');
+        props.changeState()
+        setImageURL('');
+      })
   }
 
   const handleVoiceMessage = () => {
@@ -143,29 +147,29 @@ function MessageInputForm(props) {
       method: 'POST',
       mode: 'cors',
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': '*'
       },
-      body: formData,
+      body: formData
     })
-    .then(resp => resp.json())
-    .then(responseJson => {
-      console.log(responseJson)
-      const audioSrc = responseJson.audioSrc;
-      const newMessage = {
-        author: 'ReAtlaz',
-        text: audioSrc
-      }
-      console.log('new message', newMessage)
-      props.postMessage(newMessage);
-      props.pollCallback();
-      if (vmIsQuick){
-        setVmIsQuick(false);
-      } else {
-        setText('');
-      }
-      setAudioURL('');
-      props.changeState()
-    })
+      .then(resp => resp.json())
+      .then(responseJson => {
+        console.log(responseJson)
+        const audioSrc = responseJson.audioSrc;
+        const newMessage = {
+          author: 'ReAtlaz',
+          text: audioSrc
+        }
+        console.log('new message', newMessage)
+        props.postMessage(newMessage);
+        props.pollCallback();
+        if (vmIsQuick) {
+          setVmIsQuick(false);
+        } else {
+          setText('');
+        }
+        setAudioURL('');
+        props.changeState()
+      })
   }
   const dropHandler = (event) => {
     event.preventDefault();
@@ -176,7 +180,7 @@ function MessageInputForm(props) {
     setAudioURL('');
     setIsOver(false);
   }
-    const dragOverHandler = (event) => {
+  const dragOverHandler = (event) => {
     event.preventDefault();
     setIsOver(true);
   }
@@ -192,14 +196,14 @@ function MessageInputForm(props) {
       setAudioURL('');
     }
   }
-    const sendLocation = () => {
+  const sendLocation = () => {
     console.log('trying to send location');
     navigator.geolocation.getCurrentPosition((position) => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
       const newMessage = {
         author: 'ReAtlaz',
-        text: `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`,
+        text: `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`
       }
       props.postMessage(newMessage);
       props.pollCallback();
@@ -207,9 +211,9 @@ function MessageInputForm(props) {
     console.log('location sent');
   }
 
-  const startRecording = (() => {
+  const startRecording = () => {
     setIsRecording(true);
-  })
+  }
 
   const quickSendVM = () => {
     setVmIsQuick(true);
@@ -221,7 +225,7 @@ function MessageInputForm(props) {
     setAudioURL('');
     setImageURL('');
   }
-  return(
+  return (
     <form className="form" onSubmit={handleSubmit}>
       {
         (imageURL || audioURL) && !vmIsQuick && <div className="attachments">
@@ -230,7 +234,7 @@ function MessageInputForm(props) {
           <Button
           value='close'
           className='attach-button'
-          onClick={() => {setImageURL(''); setAudioURL('')}}
+          onClick={() => { setImageURL(''); setAudioURL('') }}
           />
         </div>
       }
@@ -240,11 +244,22 @@ function MessageInputForm(props) {
           onChange={handleChange}
           value={text}
         />
+        {emojiKeyboardVisible && <EmojiKeyboard
+
+          onEmojiClick={onEmojiClick}
+          emojiNames={props.emojiNames}
+
+        />}
         {isRecording && <Button
           value='arrow_upward'
           className='voice-recording'
           onClick={quickSendVM}
         />}
+        <Button
+          value='mood'
+          className='attach-button'
+          onClick={() => setEmojiKeyboardVisible(!emojiKeyboardVisible)}
+        />
         <Button
           value='location_on'
           className='attach-button'
@@ -258,9 +273,9 @@ function MessageInputForm(props) {
             attach_file
           </Icon>
         </label>
-        <input type="file" onChange={onImageChange}  accept='image/*' id='file-input' hidden/>
+        <input type="file" onChange={onImageChange} accept='image/*' id='file-input' hidden/>
         <Button
-          value={isRecording ? 'stop' :'mic'}
+          value={isRecording ? 'stop' : 'mic'}
           className='attach-button'
           onClick={isRecording ? stopRecording : startRecording}
         />
@@ -270,22 +285,29 @@ function MessageInputForm(props) {
 }
 
 export function PageGeneralChat (props) {
-  //import for notifications support
-  console.log(props)
+  // import for notifications support
   PageChatList(props);
   const [error, setError] = useState(null);
   const [messages, setMessages] = useState([]);
+
+  const emojiNames = [
+    'angry-face',
+    'anguished-face',
+    'anxious-face-with-sweat',
+    'astonished-face',
+    'eyes',
+    'video-game'
+  ]
   const postMessage = (data) => {
-    //console.log(JSON.stringify(data));
     fetch('https://tt-front.vercel.app/message/', {
       method: 'POST',
       mode: 'cors',
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-        },
-      body: JSON.stringify(data),
-      })
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
       .then(resp => resp.json())
       .then(data => {
         pollCallback(); // get the newly sent message from server
@@ -293,22 +315,22 @@ export function PageGeneralChat (props) {
       },
       (error) => setError(error));
   }
-  const pollCallback = useCallback(
-  () => { fetch('https://tt-front.vercel.app/messages/', {
-    mode: 'cors',
-    headers: {'Access-Control-Allow-Origin': '*'}
+  const pollCallback = useCallback(() => {
+    fetch('https://tt-front.vercel.app/messages/', {
+      mode: 'cors',
+      headers: { 'Access-Control-Allow-Origin': '*' }
     })
-    .then(resp => resp.json())
-    .then(data => {
-      console.log(data)
-      setMessages(data);
-      localStorage.setItem('messagesGeneral', JSON.stringify(data));
-    },
-  (error) => {
+      .then(resp => resp.json())
+      .then(data => {
+        console.log(data)
+        setMessages(data);
+        localStorage.setItem('messagesGeneral', JSON.stringify(data));
+      },
+      (error) => {
         setError(error);
       });
   }, [])
-  useEffect( () => {
+  useEffect(() => {
     const localStorageMessages = JSON.parse(localStorage.getItem('messagesGeneral'));
     if (localStorageMessages != null) {
       setMessages(localStorageMessages);
@@ -318,59 +340,62 @@ export function PageGeneralChat (props) {
     return () => clearInterval(t)
   }, [pollCallback]);
   const changeState = (props) => {
-  setMessages(JSON.parse(localStorage.getItem('messagesGeneral')))
+    setMessages(JSON.parse(localStorage.getItem('messagesGeneral')))
   }
   if (error) {
     return <div>Error: {error.message}</div>;
   } else {
-  return (
-    <div className='page-chat'>
-      <nav>
-        <Button
-          className='nav-button'
-          value='arrow_back'
-          goTo={'/im'}
-        />
-        <Link className="chat-heading"
-        // to={'/user/' + id}
-        >
-          <img
-            src={vkfs}
-            className="user-avatar"
-            alt="Not found"
+    return (
+      <div className='page-chat'>
+        <nav>
+          <Button
+            className='nav-button'
+            value='arrow_back'
+            goTo={'/im'}
           />
-          <div className="receiver-text">
-            <div className="username">
-                Общий чат
+          <Link className="chat-heading"
+          // to={'/user/' + id}
+          >
+            <img
+              src={vkfs}
+              className="user-avatar"
+              alt="Not found"
+            />
+            <div className="receiver-text">
+              <div className="username">
+                  Общий чат
+              </div>
+              {/* <div className="last-seen"></div> */}
             </div>
-            {/* <div className="last-seen"></div> */}
-          </div> 
-        </Link>
-        <Button className='nav-button' value='search'/>
-        <Button className='nav-button' value='more_vert'/>
-      </nav>
-      <Messages messages={messages}/>
-      <MessageInputForm
-        changeState={changeState}
+          </Link>
+          <Button className='nav-button' value='search'/>
+          <Button className='nav-button' value='more_vert'/>
+        </nav>
+        <Messages
+          messages={messages}
+          emojiNames={emojiNames}
+        />
+        <MessageInputForm
+          emojiNames={emojiNames}
+          changeState={changeState}
 
-        postMessage={postMessage}
-        pollCallback={pollCallback}
-      />
-  </div>
-  );
+          postMessage={postMessage}
+          pollCallback={pollCallback}
+        />
+      </div>
+    );
   }
 }
 
-
-const mapStateToProps= (state) => ({
+const mapStateToProps = (state) => ({
   messages: state.messages.messages,
   chats: state.chats.chats,
   lastMessageGeneral: state.lastMessageGeneral.lastMessageGeneral
 })
 
-export const ConnectedPageGeneralChat = connect(mapStateToProps, {getMessages, getChats, getLastMessageGeneral})(PageGeneralChat)
+export const ConnectedPageGeneralChat = connect(mapStateToProps, { getMessages, getChats, getLastMessageGeneral })(PageGeneralChat)
 
-function getTimeFromISOString(timestamp) {
+function getTimeFromISOString (timestamp) {
   return new Date(timestamp).toLocaleTimeString('ru',
-                 { timeStyle: 'short', hour12: false, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
+    { timeStyle: 'short', hour12: false, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
 }
