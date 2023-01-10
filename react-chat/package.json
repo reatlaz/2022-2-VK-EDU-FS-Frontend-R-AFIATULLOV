@@ -1,6 +1,6 @@
 {
   "homepage": "https://reatlaz.github.io/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV",
-  "proxy": "https://reatlaz.pythonanywhere.com",
+  "proxy": "https://reatlaz.pythonanywhere.com/2022-2-VK-EDU-FS-Frontend-R-AFIATULLOV",
   "name": "react-chat",
   "version": "0.1.0",
   "private": true,
