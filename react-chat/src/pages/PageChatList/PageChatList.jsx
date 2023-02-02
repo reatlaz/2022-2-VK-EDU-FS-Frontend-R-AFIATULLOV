@@ -145,7 +145,9 @@ export function PageChatList (props) {
 
   const logOut = () => {
     localStorage.setItem('sessionExpires', JSON.stringify(null));
-    window.location.replace('https://reatlaz.pythonanywhere.com/logout/')
+    // window.location.replace('https://reatlaz.pythonanywhere.com/logout/')
+    fetch('/logout/')
+    window.location.replace('http://localhost:3000')
   }
   return (
     <div id='main' className='page-chat-list'>

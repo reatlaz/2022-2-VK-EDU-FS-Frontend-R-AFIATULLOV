@@ -111,7 +111,7 @@ function MessageInputForm (props) {
   }
   const postMessage = (data, id) => {
     const csrftoken = getCookie('csrftoken');
-    fetch('/api/chats/' + id + '/messages/', {
+    fetch('http://localhost:8000/api/chats/' + id + '/messages/', {
       method: 'POST',
       mode: 'cors',
       headers: {

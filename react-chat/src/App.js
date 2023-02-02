@@ -7,6 +7,7 @@ import { ConnectedPageChat, ConnectedPageGeneralChat, ConnectedPageChatList, Pag
 function App () {
   const PrivateRoute = ({ children }) => {
     const sessionExpires = JSON.parse(localStorage.getItem('sessionExpires'))
+    // return children
     return (sessionExpires && Date.parse(sessionExpires) > Date.now()) ? children : <Navigate to='/login'/>
   }
   const LogInRoute = ({ children }) => {
