@@ -165,7 +165,7 @@ export function PageChatList (props) {
           <Button value='search' className="nav-button"/>
       </nav>
       <div className="chats">
-      <Link className="chat" to="/im/general">
+{/*       <Link className="chat" to="/im/general">
             <img src={vkfs} className="chat-picture" alt="Not found"/>
             <div className="chat-info">
                 <div className="chat-text-info" >
@@ -194,7 +194,7 @@ export function PageChatList (props) {
                     </div>
                 </div>
             </div>
-        </Link>
+        </Link> */}
         {chatsJSX}
         <Button value='edit' className='create-chat'/>
       </div>

@@ -70,7 +70,7 @@ export const getChats = (id) => {
     dispatch(getChatsStarted())
 
     const localStorageChats = JSON.parse(localStorage.getItem('chats'));
-    if (localStorageChats != null) {
+    if (localStorageChats != null && typeof localStorageChats !== 'undefined') {
       dispatch(getChatsSuccess(localStorageChats));
     } else {
       dispatch(getChatsSuccess([]));
