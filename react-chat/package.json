@@ -3,7 +3,7 @@
   "name": "react-chat",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:8000",
+  "proxy": "https://reatlaz.pythonanywhere.com",
   "dependencies": {
     "@babel/core": "^7.16.0",
     "@emotion/react": "^11.10.5",

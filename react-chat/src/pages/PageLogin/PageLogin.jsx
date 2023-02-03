@@ -10,7 +10,7 @@ export function PageLogin (props) {
         Messenger
       </div>
       <div className='login-button-container'>
-        <a className='login-button google-auth' href='http://localhost:8000/social-auth/login/google-oauth2/'>
+        <a className='login-button google-auth' href='https://reatlaz.pythonanywhere.com/social-auth/login/google-oauth2/'>
           <img
             alt='oauth provider icon'
             src={googleLogo}
